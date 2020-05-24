@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>wkai&#39;s Blog</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="wkai&#39;s Blog">
+  <title>如何打造口袋里的渗透平台 | wkai&#39;s Blog</title>
+  <meta name="keywords" content=" KALI,Linux Deploy ">
+  <meta name="description" content="如何打造口袋里的渗透平台 | wkai&#39;s Blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="相信大家都玩过或者听过看门狗这款游戏，游戏里一位精通黑客技术的高手，于是他决定利用自己的特长来惩治全城的腐败分子，惩奸除恶。在游戏中他经常使用的作案工具就是一部手机，那么今天就教大家如何在安卓设备上安装KALI Linux渗透平台。  工具准备 一台已经获取root权限的安卓设备BusyBox.apkLinux Deploy.apkJuiceSSH.apkVNC Viewer.apkXServer">
 <meta property="og:type" content="article">
@@ -59,7 +59,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/" class="avatar_target">
     <img class="avatar" src="/img/avatar.jpg" />
@@ -188,12 +188,55 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-linuxdeploy" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#wkai’s-Blog"><span class="toc-text">wkai’s Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Welcome"><span class="toc-text">Welcome</span></a></li></ol></li></ol>
+        <h1 class="article-title">如何打造口袋里的渗透平台</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="折腾瞎搞">折腾瞎搞</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color3">KALI,Linux Deploy</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-05-24 11:16:47'>2020-05-24 11:16</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        
     
 <style>
     .left-col .switch-btn,
@@ -206,14 +249,57 @@
     }
 </style>
 </div>
-            <h1 id="wkai’s-Blog"><a href="#wkai’s-Blog" class="headerlink" title="wkai’s Blog"></a>wkai’s Blog</h1><h2 id="Welcome"><a href="#Welcome" class="headerlink" title="Welcome"></a>Welcome</h2>
-        </article>
-        
-        <p>
-            <a  class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>相信大家都玩过或者听过看门狗这款游戏，游戏里一位精通黑客技术的高手，于是他决定利用自己的特长来惩治全城的腐败分子，惩奸除恶。在游戏中他经常使用的作案工具就是一部手机，那么今天就教大家如何在安卓设备上安装KALI Linux渗透平台。</p>
+<ol>
+<li><p>工具准备</p>
+<p><strong>一台已经获取root权限的安卓设备<br>BusyBox.apk<br>Linux Deploy.apk<br>JuiceSSH.apk<br>VNC Viewer.apk<br>XServer XSDL.apk</strong><br><img src="https://raw.githubusercontent.com/wkai2118/tuchuang/master/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1590289808912.png" alt></p>
+</li>
+<li><p>BusyBox的设置</p>
+<pre><code>BusyBox 是一个集成了三百多个最常用Linux命令和工具的软件。BusyBox 包含了一些简单的工具，例如ls、cat和echo等等，还包含了一些更大、更复杂的工具，例grep、find、mount以及telnet。有些人将 BusyBox 称为 Linux 工具里的瑞士军刀。简单的说BusyBox就好像是个大工具箱，它集成压缩了 Linux 的许多工具和命令，也包含了 Android 系统的自带的shell。</code></pre><p>这里我们使用的BusyBox是 <a href="https://github.com/meefik" target="_blank" rel="noopener">meefik</a> 大佬的BusyBox，简单易用，一键安装<br>1）打开界面是这样的，一片English，看不懂没关系，我也看不懂。<br><img src="https://raw.githubusercontent.com/wkai2118/tuchuang/master/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1590289979557.png" alt="主界面"><br>2）打开左上角的三条杠，选择Settings进入设置界面，在<strong>Install path</strong>输入<br><strong>/system/xbin</strong><br><img src="https://raw.githubusercontent.com/wkai2118/tuchuang/master/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1590290027703.png" alt="输入安装路径"><br>3）返回主界面，点击右下角INSTALL进行安装，安装后的正常界面应该是这样的<br><img src="https://raw.githubusercontent.com/wkai2118/tuchuang/master/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1590290098978.png" alt><br>4）为了确认是否安装成功还可以点击左上三条杠，选择Information，如果这里出现了yes，就说明你安装成功了<br><img src="https://raw.githubusercontent.com/wkai2118/tuchuang/master/%E5%B0%8F%E4%B9%A6%E5%8C%A0/1590290128963.png" alt></p>
+</li>
+<li><p>Linux Deploy的设置</p>
+</li>
+<li><p>无图形化启动</p>
+</li>
+<li><p>图形化启动</p>
+</li>
+</ol>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 1633745323@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>如何打造口袋里的渗透平台</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="wkai">wkai</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-05-24, 11:16:47</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-24, 11:16:47</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/05/24/linuxdeploy/" title="如何打造口袋里的渗透平台">http://wkaiblog.cn/2020/05/24/linuxdeploy/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
     </div>
     <div class="copyright">
         <p class="footer-entry">©2020 wkai</p>
