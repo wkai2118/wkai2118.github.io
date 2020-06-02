@@ -6,20 +6,48 @@
   <meta name="keywords" content=" hexo ">
   <meta name="description" content="hexo个人博客快速搭建 | wkai&#39;s Blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="。。。。。。">
+<meta name="description" content="相信大家都玩过或者听过看门狗这款游戏，游戏里一位精通黑客技术的高手，于是他决定利用自己的特长来惩治全城的腐败分子，惩奸除恶。在游戏中他经常使用的作案工具就是一部手机，那么今天就教大家如何在安卓设备上安装KALI Linux渗透平台。 这里先放一张成品图  工具准备 一台已经获取root权限的安卓设备BusyBox.apkLinux Deploy.apkJuiceSSH.apkVNC Viewer.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何打造口袋里的渗透平台（二）">
-<meta property="og:url" content="http://wkaiblog.cn/2020/06/02/linxdploy3/index.html">
+<meta property="og:title" content="如何打造口袋里的渗透平台（一）">
+<meta property="og:url" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/index.html">
 <meta property="og:site_name" content="wkai&#39;s Blog">
-<meta property="og:description" content="。。。。。。">
+<meta property="og:description" content="相信大家都玩过或者听过看门狗这款游戏，游戏里一位精通黑客技术的高手，于是他决定利用自己的特长来惩治全城的腐败分子，惩奸除恶。在游戏中他经常使用的作案工具就是一部手机，那么今天就教大家如何在安卓设备上安装KALI Linux渗透平台。 这里先放一张成品图  工具准备 一台已经获取root权限的安卓设备BusyBox.apkLinux Deploy.apkJuiceSSH.apkVNC Viewer.">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linxdploy3/3-c_auIU2tQ.jpg">
-<meta property="article:published_time" content="2020-06-02T02:05:26.791Z">
-<meta property="article:modified_time" content="2020-06-02T04:50:44.790Z">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/1.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/2.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/3.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/4.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/5.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/6.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/7.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/8.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/9.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/10.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/11.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/12.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/13.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/14.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/15.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/16.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/17.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/18.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/19.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/20.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/21.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/22.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/23.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/24.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/25.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/26.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/27.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/28.png">
+<meta property="og:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/29.png">
+<meta property="article:published_time" content="2020-06-02T02:05:26.777Z">
+<meta property="article:modified_time" content="2020-05-25T13:12:26.000Z">
 <meta property="article:author" content="wkai">
 <meta property="article:tag" content="KALI">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://wkaiblog.cn/2020/06/02/linxdploy3/3-c_auIU2tQ.jpg">
+<meta name="twitter:image" content="http://wkaiblog.cn/2020/06/02/linuxdeploy2/1.png">
 
 
 <link rel="icon" href="/img/avatar.jpg">
