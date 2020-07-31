@@ -410,10 +410,10 @@
 <h5 id="用一个例子说明下反射型"><a href="#用一个例子说明下反射型" class="headerlink" title="用一个例子说明下反射型"></a>用一个例子说明下反射型</h5><p>&emsp;我们需要用到一个靶场，靶场由漏洞盒子提供，这个靶场主要是localstorage的问题，因为现在很多网站的搜索栏为了方便我们，有了一个历史搜索记录保存我们之前搜索过的东西。而这个记录一般会保存到localstorage中，如果开发者没有做好过滤等保护措施，这个地方就可能会存在xss。靶场地址：<a href="https://tofu.exeye.run/local" target="_blank" rel="noopener">https://tofu.exeye.run/local</a></p>
 <ul>
 <li><p>打开页面，只有一个输入框和搜索按钮</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(6).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(6).png" alt></p>
 </li>
 <li><p>随便输入123，刷新页面后发现会有历史搜索记录</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(2).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(2).png" alt></p>
 </li>
 <li><p>打开控制台，查看javascript代码</p>
 </li>
@@ -433,17 +433,16 @@
     <span class="token punctuation">)</span></code></pre>
 </li>
 <li><p>分析代码，我们发现可以有两处可控制的val，造成反射型的XSS</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard.png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard.png" alt></p>
 </li>
 <li><p>我们直接使用测试函数<code>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;</code></p>
-</li>
-<li><p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(4).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(4).png" alt></p>
 </li>
 <li><p>点击搜索后刷新页面再输入任意值会出现XSS弹窗</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(5).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" alt></p>
 </li>
 <li><p>此时可以在控制台中看到record的值就为<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code></p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(3).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(3).png" alt></p>
 </li>
 <li><p>如果想重新实验，可将<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code>从record中删去</p>
 </li>
@@ -452,7 +451,7 @@
 <li><p>Local Storage</p>
 <ul>
 <li><p>一般在使用搜索框的时候，为了方便都会有历史记录这个功能。而历史记录一般存放在localstorage中</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B%5Cclipboard(1).png" alt></p>
+<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(1).png" alt></p>
 </li>
 </ul>
 </li>
