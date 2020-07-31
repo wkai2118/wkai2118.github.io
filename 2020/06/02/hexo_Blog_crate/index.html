@@ -462,18 +462,26 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="1-安装-Git-Bash"><a href="#1-安装-Git-Bash" class="headerlink" title="1. 安装 Git Bash"></a>1. 安装 Git Bash</h5><p>​        Git官方网站 <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">https://git-scm.com/downloads</a></p>
-<h5 id="2-安装-Node-js"><a href="#2-安装-Node-js" class="headerlink" title="2. 安装 Node js"></a>2. 安装 Node js</h5><pre><code>     Node.js官方网站 http://nodejs.cn/</code></pre><h5 id="3-安装hexo"><a href="#3-安装hexo" class="headerlink" title="3. 安装hexo"></a>3. 安装hexo</h5><p>​        npm install -g hexo<br>​        npm install hexo-deployer-git –save</p>
-<h5 id="4-添加github账号和邮箱"><a href="#4-添加github账号和邮箱" class="headerlink" title="4. 添加github账号和邮箱"></a>4. 添加github账号和邮箱</h5><p>​         首先在github中创建一个仓库，仓库格式为yourname.github.io，其中yourname为你的github账户名<br>         然后在git终端里，添加你的github账号和注册的邮箱</p>
-<p>​        git config –global user.name “yourname”<br>​        git config –global user.email “youremail”</p>
-<h5 id="5-创建ssh"><a href="#5-创建ssh" class="headerlink" title="5. 创建ssh"></a>5. 创建ssh</h5><pre><code>     在git终端中输入 ssh-keygen -t rsa -C &quot;youremail@example.com
-     生成ssh，然后在生成的信息中找到 id_rsa.pub 的路径，找到胡将 id_rsa.pub 的内容复制到 github 的 SSH keys 里
-     验证是否成功在终端中输入 ssh -T git@github.com</code></pre><h5 id="6-先介绍下hexo的一些命令"><a href="#6-先介绍下hexo的一些命令" class="headerlink" title="6. 先介绍下hexo的一些命令"></a>6. 先介绍下hexo的一些命令</h5><p>​        hexo init #初始化博客内容，刚安装hexo需要的操作<br>​        hexo clean #清理缓存文件<br>​        hexo generate #生成静态文件<br>​        hexo server #用于启动本地服务，测试用<br>​        hexo deploy #部署网站<br>​        hexo new “news” #新建文章</p>
-<h5 id="6-修改网站配置文件"><a href="#6-修改网站配置文件" class="headerlink" title="6. 修改网站配置文件"></a>6. 修改网站配置文件</h5><pre><code>     打开博客根目录，找到 _config.yml</code></pre><p>​        deploy:<br>          type: git<br>          repo: <a href="https://github.com/yourname/yournname.github.io.git" target="_blank" rel="noopener">https://github.com/yourname/yournname.github.io.git</a></p>
-<h5 id="7-部署博客"><a href="#7-部署博客" class="headerlink" title="7. 部署博客"></a>7. 部署博客</h5><p>​        hexo c<br>​        hexo g<br>​        hexo d</p>
-<p>​        最后在浏览器中输入yourname.github.io就可以看到你的Blog了</p>
-<h5 id="8-小书匠绑定第三方数据和图床"><a href="#8-小书匠绑定第三方数据和图床" class="headerlink" title="8. 小书匠绑定第三方数据和图床"></a>8. 小书匠绑定第三方数据和图床</h5><p>​        ########################</p>
+                <h5 id="1-安装-Git-Bash"><a href="#1-安装-Git-Bash" class="headerlink" title="1. 安装 Git Bash"></a>1. 安装 Git Bash</h5><pre><code>    Git官方网站 https://git-scm.com/downloads</code></pre><h5 id="2-安装-Node-js"><a href="#2-安装-Node-js" class="headerlink" title="2. 安装 Node js"></a>2. 安装 Node js</h5><pre><code>     Node.js官方网站 http://nodejs.cn/</code></pre><h5 id="3-安装hexo"><a href="#3-安装hexo" class="headerlink" title="3. 安装hexo"></a>3. 安装hexo</h5><pre><code>    npm install -g hexo
+    npm install hexo-deployer-git --save</code></pre><h5 id="4-添加github账号和邮箱"><a href="#4-添加github账号和邮箱" class="headerlink" title="4. 添加github账号和邮箱"></a>4. 添加github账号和邮箱</h5><pre><code>     首先在github中创建一个仓库，仓库格式为yourname.github.io，其中yourname为你的github账户名
+     然后在git终端里，添加你的github账号和注册的邮箱
 
+    git config --global user.name &quot;yourname&quot;
+    git config --global user.email &quot;youremail&quot;</code></pre><h5 id="5-创建ssh"><a href="#5-创建ssh" class="headerlink" title="5. 创建ssh"></a>5. 创建ssh</h5><pre><code>在git终端中输入 ssh-keygen -t rsa -C &quot;youremail@example.com
+生成ssh，然后在生成的信息中找到 id_rsa.pub 的路径，找到胡将 id_rsa.pub 的内容复制到github的SSH keys里
+ 验证是否成功在终端中输入 ssh -T git@github.com</code></pre><h5 id="6-先介绍下hexo的一些命令"><a href="#6-先介绍下hexo的一些命令" class="headerlink" title="6. 先介绍下hexo的一些命令"></a>6. 先介绍下hexo的一些命令</h5><pre><code>    hexo init #初始化博客内容，刚安装hexo需要的操作
+    hexo clean #清理缓存文件
+    hexo generate #生成静态文件
+    hexo server #用于启动本地服务，测试用
+    hexo deploy #部署网站
+    hexo new &quot;news&quot; #新建文章</code></pre><h5 id="7-修改网站配置文件"><a href="#7-修改网站配置文件" class="headerlink" title="7. 修改网站配置文件"></a>7. 修改网站配置文件</h5><pre><code>     打开博客根目录，找到 _config.yml
+    deploy:
+    type: git
+    repo: https://github.com/yourname/yournname.github.io.git</code></pre><h5 id="8-部署博客"><a href="#8-部署博客" class="headerlink" title="8. 部署博客"></a>8. 部署博客</h5><pre><code>    hexo c
+    hexo g
+    hexo d
+
+    最后在浏览器中输入yourname.github.io就可以看到你的Blog了</code></pre><h5 id="9-小书匠绑定第三方数据和图床"><a href="#9-小书匠绑定第三方数据和图床" class="headerlink" title="9. 小书匠绑定第三方数据和图床"></a>9. 小书匠绑定第三方数据和图床</h5><pre><code>    ########################</code></pre>
             </div>
             <hr/>
 
@@ -771,8 +779,7 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            1. 安装 Git Bash​        Git官方网站 https://git-scm.com/downloads
-2. 安装 Node js     Node.js官方网站 http://nodejs.cn/3. 安装hexo​  
+                            1. 安装 Git Bash    Git官方网站 https://git-scm.com/downloads2. 安装 Node js     Node.js官方网站 http://nodejs.cn/3. 安装hexo    npm i
                         
                     </div>
                     <div class="publish-info">
