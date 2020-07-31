@@ -396,7 +396,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<script>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
+<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<code>&lt;script&gt;</code>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
 <li>本篇靶场地址：<a href="https://tofu.exeye.run/event" target="_blank" rel="noopener">https://tofu.exeye.run/event</a></li>
 </ul>
 <br>
@@ -404,7 +404,7 @@
 <ul>
 <li>直接打开页面是一个输入框，右边的按钮会将输入的内容变成一个链接</li>
 </ul>
-<p><img src="%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt=""></p>
+<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt></p>
 <ul>
 <li><p>按套路走，先看javascript的源代码，因为输入内容一般会先由js控制</p>
 </li>
@@ -424,10 +424,10 @@
 </li>
 <li><p>如果只是过滤script这个字眼，那这里有个小技巧，可以在一个script中再插入个script，比如scrscriptipt，系统将script过滤掉后刚好面的字母又可以组成一个script</p>
 </li>
-<li><p>但是偏偏还过滤了<>，所以这就有点难办了，无法打破网页结构</p>
+<li><p>但是偏偏还过滤了&lt;&gt;，所以这就有点难办了，无法打破网页结构</p>
 </li>
 </ul>
-<p><img src="%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt=""></p>
+<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt></p>
 <ul>
 <li><p>分析源码，我们发现还有个方法，就是构造一个onclick事件让他触发js代码</p>
 </li>
@@ -440,16 +440,16 @@
 <li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span></code></pre>
 </li>
 </ul>
-<p><img src="%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
+<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
 <ul>
 <li>点击链接成功触发弹窗</li>
 </ul>
-<p><img src="%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt=""></p>
+<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt></p>
 <ul>
 <li>不过有个需要注意到的地方就是payload括号中不能用双引号，否则就不能凑成一个闭合，也就无法触发弹窗了</li>
 </ul>
-<p><img src="%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt=""></p>
-</script></li></ul>
+<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt></p>
+
             </div>
             <hr/>
 
