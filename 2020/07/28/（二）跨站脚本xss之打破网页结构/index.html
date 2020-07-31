@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（一）跨站脚本XSS之基本反射型, wkai&#39;s Blog">
+    <meta name="keywords" content="（二）跨站脚本XSS之打破网页结构, wkai&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（一）跨站脚本XSS之基本反射型 | wkai&#39;s Blog</title>
+    <title>（二）跨站脚本XSS之打破网页结构 | wkai&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（一）跨站脚本XSS之基本反射型</h1>
+                    <h1 class="description center-align post-title">（二）跨站脚本XSS之打破网页结构</h1>
                 </div>
             </div>
         </div>
@@ -379,7 +379,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-07-19
+                    2020-07-28
                 </div>
                 
 
@@ -395,63 +395,46 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="什么是XSS？"><a href="#什么是XSS？" class="headerlink" title="什么是XSS？"></a>什么是XSS？</h5><p>&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强大功能以及网站前端应用的复杂化，是否跨域已经不再重要。但是由于历史原因，XSS这个名字却一直保留下来。</p>
-<h5 id="XSS根据效果可分为以下几类："><a href="#XSS根据效果可分为以下几类：" class="headerlink" title="XSS根据效果可分为以下几类："></a>XSS根据效果可分为以下几类：</h5><ul>
-<li><strong>反射型：(Non-persistent xsS)</strong>：反射型XSS只是简单地把用户输入的数据“反射”给浏览器。也就是说，黑客往往需要诱使用户“点击”一个恶意链接，才能攻击成功。反射型 XSS 也叫做“非持久型XSS。</li>
-<li><strong>存储式XSS</strong>：黑客把恶意的脚本保存到服务器端，所以这种XSS攻击就叫做“存储型XSS”。<ul>
-<li>比较常见的一个场景就是，黑客写下一篇包含有恶意JavaScript代码的博客文章，文章发存储型XSS会把用户输入的数据“存储”在服务器端。这种XSS具有很强的稳定性。表后，所有访问该博客文章的用户，都会在他们的浏览器中执行这段恶意的JavaScript代码。</li>
-<li>存储型XSS通常也叫做“持久型XSS”(Persistent XSS)，因为从效果上来说，它存在的时间是比较长的。</li>
+                <ul>
+<li>这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场地址：<a href="https://tofu.exeye.run/dom" target="_blank" rel="noopener">https://tofu.exeye.run/dom</a></li>
 </ul>
-</li>
-<li><strong>基于DOM的XSS</strong>：实际上，这种类型的XSS并非按照“数据是否保存在服务器端”来划分DOM Based xSS从效果上来说也是反射型XSS。单独划分出来，是因为DOM Based XSS的形成原因比较特别，发现它的安全专家专门提出了这种类型的XSS。出于历史原因，也就把它单独作为一个分类了。通过修改页面的DOM节点形成的XSS，称之为DOM Based XSS。</li>
-</ul>
-<h5 id="用一个例子说明下反射型"><a href="#用一个例子说明下反射型" class="headerlink" title="用一个例子说明下反射型"></a>用一个例子说明下反射型</h5><p>&emsp;我们需要用到一个靶场，靶场由<a href="https://zhishihezi.net/box/" target="_blank" rel="noopener">知识盒子</a>提供，这个靶场主要是localstorage的问题，因为现在很多网站的搜索栏为了方便我们，有了一个历史搜索记录保存我们之前搜索过的东西。而这个记录一般会保存到localstorage中，如果开发者没有做好过滤等保护措施，这个地方就可能会存在xss。靶场地址：<a href="https://tofu.exeye.run/local" target="_blank" rel="noopener">https://tofu.exeye.run/local</a></p>
+<br>
+
 <ul>
-<li><p>打开页面，只有一个输入框和搜索按钮</p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(6).png" alt></p>
+<li><p>打开页面依旧是只有一个搜索框</p>
 </li>
-<li><p>随便输入123，刷新页面后发现会有历史搜索记录</p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(2).png" alt></p>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard.png" alt></p>
 </li>
-<li><p>打开控制台，查看javascript代码</p>
+<li><p>尝试输入些数据，发现数据并不会存取到历史记录中</p>
 </li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'input'</span><span class="token punctuation">,</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">let</span> val<span class="token operator">=</span>localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span><span class="token string">'record'</span><span class="token punctuation">)</span><span class="token operator">||</span><span class="token string">''</span>           <span class="token comment" spellcheck="true">//从localstorage中的record中取数据存到val</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>val<span class="token operator">!=</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">{</span>                                        <span class="token comment" spellcheck="true">//如果val不为空</span>
-            <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'block'</span><span class="token punctuation">)</span>             <span class="token comment" spellcheck="true">//定义类history的css</span>
-            <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;a href="/?search='</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'&lt;/a>'</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//类history的将会增加这一对包含val的标签</span>
-         <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
-            <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'none'</span><span class="token punctuation">)</span>      <span class="token comment" spellcheck="true">//否则将不显示任何东西</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-btn'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>       <span class="token comment" spellcheck="true">//用于存取数据到浏览器的localstorage</span>
-        <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>       <span class="token comment" spellcheck="true">//将输入框的数据存到val中</span>
-        localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span><span class="token string">'record'</span><span class="token punctuation">,</span>val<span class="token punctuation">)</span>     <span class="token comment" spellcheck="true">//将val的数据再存到localstorage中的record中</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span></code></pre>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(4).png" alt></p>
 </li>
-<li><p>分析代码，我们发现可以有两处可控制的val，造成反射型的XSS</p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard.png" alt></p>
+<li><p>打开控制台定位到输入框</p>
 </li>
-<li><p>我们直接使用测试函数<code>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;</code></p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(4).png" alt></p>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(2).png" alt></p>
 </li>
-<li><p>点击搜索后刷新页面再输入任意值会出现XSS弹窗</p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" alt></p>
+<li><p>遇到这种可以控制标签属性值的情况，可以尝试闭合标签页，破坏网页结构，造成XSS</p>
 </li>
-<li><p>此时可以在控制台中看到record的值就为<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code></p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(3).png" alt></p>
+<li><pre class=" language-javascript"><code class="language-javascript">"<span class="token operator">></span><span class="token operator">&lt;</span>script<span class="token operator">></span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>  <span class="token comment" spellcheck="true">//注意：这里括号里的单引号不能丢</span></code></pre>
 </li>
-<li><p>如果想重新实验，可将<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code>从record中删去</p>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(1).png" alt></p>
 </li>
-</ul>
-<h5 id="知识拓展"><a href="#知识拓展" class="headerlink" title="知识拓展"></a>知识拓展</h5><ul>
-<li><p>Local Storage</p>
-<ul>
-<li><p>一般在使用搜索框的时候，为了方便都会有历史记录这个功能。而历史记录一般存放在localstorage中</p>
-<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(1).png" alt></p>
+<li><p>被破坏后的网页结构</p>
 </li>
-</ul>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" alt></p>
+</li>
+<li><p>最后再分析javascript代码，事实上正常流程应当先分析javascript代码的</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'input'</span><span class="token punctuation">,</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>              <span class="token comment" spellcheck="true">//定义输入框函数</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//从输入框中得到的数据若为空</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'none'</span><span class="token punctuation">)</span>            <span class="token comment" spellcheck="true">//类history的css样式为空</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'block'</span><span class="token punctuation">)</span>            
+    <span class="token punctuation">}</span>
+    <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>                    <span class="token comment" spellcheck="true">//若不为空则将数据赋予val</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;a href="/?search='</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">暂无搜索结果&lt;/a>'</span><span class="token punctuation">)</span>         <span class="token comment" spellcheck="true">//再将val的值嵌入到类history的标签中</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
 </li>
 </ul>
 
@@ -479,7 +462,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">http://wkaiblog.cn/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/</a>
+                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -682,9 +665,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+                <i class="far fa-dot-circle"></i>&nbsp;Current
+            </div>
             <div class="card">
                 <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
@@ -711,9 +695,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -722,6 +706,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -732,46 +717,31 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/02/linxdploy3/">
+                <a href="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
                     <div class="card-image">
                         
+                        <img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" class="responsive-img" alt="（一）跨站脚本XSS之基本反射型">
                         
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="如何打造口袋里的渗透平台（二）">
-                        
-                        <span class="card-title">如何打造口袋里的渗透平台（二）</span>
+                        <span class="card-title">（一）跨站脚本XSS之基本反射型</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            。。。。。。
-
-
+                            什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-02
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E6%8A%98%E8%85%BE%E7%9E%8E%E6%90%9E/" class="post-category">
-                                    折腾瞎搞
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            wkai
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/KALI/">
-                        <span class="chip bg-color">KALI</span>
-                    </a>
-                    
                 </div>
                 
             </div>
