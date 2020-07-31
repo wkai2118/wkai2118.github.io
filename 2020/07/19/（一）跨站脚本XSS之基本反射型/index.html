@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（一）跨站脚本XSS之基本反射型, wkai&#39;s Blog">
+    <meta name="keywords" content="typora-vue-theme Theme introduction, wkai&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（一）跨站脚本XSS之基本反射型 | wkai&#39;s Blog</title>
+    <title>typora-vue-theme Theme introduction | wkai&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（一）跨站脚本XSS之基本反射型</h1>
+                    <h1 class="description center-align post-title">typora-vue-theme Theme introduction</h1>
                 </div>
             </div>
         </div>
@@ -379,7 +379,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
-                    2020-07-31
+                    2020-07-19
                 </div>
                 
 
@@ -395,9 +395,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <hr>
-<p> 标题：（一）跨站脚本XSS之基本反射型<br> 日期：2020-07-19</p>
-<h5 id="什么是XSS？"><a href="#什么是XSS？" class="headerlink" title="什么是XSS？"></a>什么是XSS？</h5><p>&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强大功能以及网站前端应用的复杂化，是否跨域已经不再重要。但是由于历史原因，XSS这个名字却一直保留下来。</p>
+                <h5 id="什么是XSS？"><a href="#什么是XSS？" class="headerlink" title="什么是XSS？"></a>什么是XSS？</h5><p>&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强大功能以及网站前端应用的复杂化，是否跨域已经不再重要。但是由于历史原因，XSS这个名字却一直保留下来。</p>
 <h5 id="XSS根据效果可分为以下几类："><a href="#XSS根据效果可分为以下几类：" class="headerlink" title="XSS根据效果可分为以下几类："></a>XSS根据效果可分为以下几类：</h5><ul>
 <li><strong>反射型：(Non-persistent xsS)</strong>：反射型XSS只是简单地把用户输入的数据“反射”给浏览器。也就是说，黑客往往需要诱使用户“点击”一个恶意链接，才能攻击成功。反射型 XSS 也叫做“非持久型XSS。</li>
 <li><strong>存储式XSS</strong>：黑客把恶意的脚本保存到服务器端，所以这种XSS攻击就叫做“存储型XSS”。<ul>
@@ -410,10 +408,10 @@
 <h5 id="用一个例子说明下反射型"><a href="#用一个例子说明下反射型" class="headerlink" title="用一个例子说明下反射型"></a>用一个例子说明下反射型</h5><p>&emsp;我们需要用到一个靶场，靶场由漏洞盒子提供，这个靶场主要是localstorage的问题，因为现在很多网站的搜索栏为了方便我们，有了一个历史搜索记录保存我们之前搜索过的东西。而这个记录一般会保存到localstorage中，如果开发者没有做好过滤等保护措施，这个地方就可能会存在xss。靶场地址：<a href="https://tofu.exeye.run/local" target="_blank" rel="noopener">https://tofu.exeye.run/local</a></p>
 <ul>
 <li><p>打开页面，只有一个输入框和搜索按钮</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(6).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(6).png" alt></p>
 </li>
 <li><p>随便输入123，刷新页面后发现会有历史搜索记录</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(2).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(2).png" alt></p>
 </li>
 <li><p>打开控制台，查看javascript代码</p>
 </li>
@@ -433,16 +431,16 @@
     <span class="token punctuation">)</span></code></pre>
 </li>
 <li><p>分析代码，我们发现可以有两处可控制的val，造成反射型的XSS</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard.png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard.png" alt></p>
 </li>
 <li><p>我们直接使用测试函数<code>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;</code></p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(4).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(4).png" alt></p>
 </li>
 <li><p>点击搜索后刷新页面再输入任意值会出现XSS弹窗</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" alt></p>
 </li>
 <li><p>此时可以在控制台中看到record的值就为<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code></p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(3).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(3).png" alt></p>
 </li>
 <li><p>如果想重新实验，可将<code>&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;</code>从record中删去</p>
 </li>
@@ -451,7 +449,7 @@
 <li><p>Local Storage</p>
 <ul>
 <li><p>一般在使用搜索框的时候，为了方便都会有历史记录这个功能。而历史记录一般存放在localstorage中</p>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(1).png" alt></p>
+<p><img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(1).png" alt></p>
 </li>
 </ul>
 </li>
@@ -481,7 +479,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">http://wkaiblog.cn/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/</a>
+                    <a href="http://wkaiblog.cn/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">http://wkaiblog.cn/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -689,26 +687,23 @@
                 <i class="far fa-dot-circle"></i>&nbsp;Current
             </div>
             <div class="card">
-                <a href="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
+                <a href="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
                     <div class="card-image">
                         
+                        <img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" class="responsive-img" alt="typora-vue-theme Theme introduction">
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="（一）跨站脚本XSS之基本反射型">
-                        
-                        <span class="card-title">（一）跨站脚本XSS之基本反射型</span>
+                        <span class="card-title">typora-vue-theme Theme introduction</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
- 标题：（一）跨站脚本XSS之基本反射型 日期：2020-07-19
-什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨
+                            什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-31
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
                             </span>
                         <span class="publish-author">
                             
