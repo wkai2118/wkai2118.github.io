@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（二）跨站脚本XSS之打破网页结构, wkai&#39;s Blog">
+    <meta name="keywords" content="（三）跨站脚本XSS之多点输入, wkai&#39;s Blog">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（二）跨站脚本XSS之打破网页结构 | wkai&#39;s Blog</title>
+    <title>（三）跨站脚本XSS之多点输入 | wkai&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（二）跨站脚本XSS之打破网页结构</h1>
+                    <h1 class="description center-align post-title">（三）跨站脚本XSS之多点输入</h1>
                 </div>
             </div>
         </div>
@@ -396,45 +396,63 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场地址：<a href="https://tofu.exeye.run/dom" target="_blank" rel="noopener">https://tofu.exeye.run/dom</a></li>
+<li>本篇也是讲xss的攻击思路。当存在多个输入点时。开发者可能会有疏忽，并没有做好每个输入点的过滤防御,我们应该尽可能对每个输入点进行测试，抓住破绽。    靶场地址：<a href="https://tofu.exeye.run/output" target="_blank" rel="noopener">https://tofu.exeye.run/output</a></li>
+<li>打开页面是这样的</li>
 </ul>
-<br>
-
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(5).png" alt></p>
 <ul>
-<li><p>打开页面依旧是只有一个搜索框</p>
+<li><p>按照套路我们直接看下他的javascript代码，发现存在两个输出点</p>
 </li>
-<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard.png" alt></p>
+<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.user-box-top'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.ipt-name'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>         <span class="token comment" spellcheck="true">//将名字输入框中的内容加入到类user-box-top的标签中</span>
+        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.age-box-top'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.ipt-age'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>           <span class="token comment" spellcheck="true">//将年龄输入框中的内容加入到类age-box-top的标签中</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
 </li>
-<li><p>尝试输入些数据，发现数据并不会存取到历史记录中</p>
+<li><p>输出点里标签里的内容可随意输入内容</p>
 </li>
-<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(4).png" alt></p>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(2).png" alt></p>
+<ul>
+<li>尝试从名字和年龄这两个输出点入手</li>
+<li>首先是名字，直接输入框上<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>,但是情况好像不太妙，因为我们输入的&lt;&gt;好像会被过滤</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(6).png" alt></p>
+<ul>
+<li>所以只能考虑年龄框了，但是如果这都能成功的话，那未免也太傻逼了，年龄框被要求只能输入数字</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(9).png" alt></p>
+<ul>
+<li><p>所以这里有两种方法</p>
+<ul>
+<li><p>方法一：用burp抓包绕过</p>
+<ul>
+<li>输入正常的数据，然后用burp开启抓包</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(7).png" alt></p>
+<ul>
+<li>将年龄改为<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(8).png" alt></p>
+<ul>
+<li>最后将数据包放掉，成功实现弹窗</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard.png" alt></p>
 </li>
-<li><p>打开控制台定位到输入框</p>
+<li><p>方法二：直接修改前端代码</p>
+<ul>
+<li>观察源代码，我们发现，他只是在前端对输入做了限制，只允许输入数字</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(4).png" alt></p>
+<ul>
+<li>如果将这个限制直接删除，就不会提示限制了</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(3).png" alt></p>
+<ul>
+<li>提交数据直接弹窗</li>
+</ul>
+<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(1).png" alt></p>
 </li>
-<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(2).png" alt></p>
-</li>
-<li><p>遇到这种可以控制标签属性值的情况，可以尝试闭合标签页，破坏网页结构，造成XSS</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript">"<span class="token operator">></span><span class="token operator">&lt;</span>script<span class="token operator">></span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>  <span class="token comment" spellcheck="true">//注意：这里括号里的单引号不能丢</span></code></pre>
-</li>
-<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(1).png" alt></p>
-</li>
-<li><p>被破坏后的网页结构</p>
-</li>
-<li><p><img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" alt></p>
-</li>
-<li><p>最后再分析javascript代码，事实上正常流程应当先分析javascript代码的</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'input'</span><span class="token punctuation">,</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>              <span class="token comment" spellcheck="true">//定义输入框函数</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//从输入框中得到的数据若为空</span>
-        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'none'</span><span class="token punctuation">)</span>            <span class="token comment" spellcheck="true">//类history的css样式为空</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span><span class="token string">'block'</span><span class="token punctuation">)</span>            
-    <span class="token punctuation">}</span>
-    <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>                    <span class="token comment" spellcheck="true">//若不为空则将数据赋予val</span>
-    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.history'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;a href="/?search='</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">暂无搜索结果&lt;/a>'</span><span class="token punctuation">)</span>         <span class="token comment" spellcheck="true">//再将val的值嵌入到类history的标签中</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+</ul>
 </li>
 </ul>
 
@@ -462,7 +480,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/</a>
+                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -669,26 +687,24 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/">
+                <a href="/2020/07/31/1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="（三）跨站脚本XSS之多点输入">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="1">
                         
-                        <span class="card-title">（三）跨站脚本XSS之多点输入</span>
+                        <span class="card-title">1</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-本篇也是讲xss的攻击思路。当存在多个输入点时。开发者可能会有疏忽，并没有做好每个输入点的过滤防御,我们应该尽可能对每个输入点进行测试，抓住破绽。    靶场地址：https://tofu.exeye.run/output
-打开页面是这样
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-31
                         </span>
                         <span class="publish-author">
                             
@@ -708,23 +724,32 @@
                 Next&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
+                <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" class="responsive-img" alt="（一）跨站脚本XSS之基本反射型">
+                        <img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" class="responsive-img" alt="（二）跨站脚本XSS之打破网页结构">
                         
-                        <span class="card-title">（一）跨站脚本XSS之基本反射型</span>
+                        <span class="card-title">（二）跨站脚本XSS之打破网页结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强
+                            
+这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场地址：https://tofu.exeye.run/dom
+
+
+
+
+打开页面依旧是只有一个搜索框
+
+
+
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
                             </span>
                         <span class="publish-author">
                             
