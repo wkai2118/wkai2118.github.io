@@ -400,14 +400,36 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h4 id="一-靶场说明"><a href="#一-靶场说明" class="headerlink" title="一 靶场说明"></a>一 靶场说明</h4><ul>
-<li>本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。</li>
-<li>需要用到的技能：拼接绕过，引号转换</li>
-<li>靶场地址：<a href="https://tofu.exeye.run/commit/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/commit/log_page</a></li>
-<li>靶场要求：利用评论区构造XSS，让受害者点击恶意评论，发送自己的cookie给发送给指定的URL，如果网站判定cookie是正确的，那么攻击者的页面将会弹窗出正确的flag</li>
-<li>所以我们需要注册两个账户，一个模拟攻击者，一个模拟受害者</li>
-<li>注册账户一：    attack    07034170    123</li>
-<li>注册账户二：    user        03174171    123</li>
+<li><p>本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。</p>
+</li>
+<li><p>需要用到的技能：拼接绕过，引号转换</p>
+</li>
+<li><p>靶场地址：<a href="https://tofu.exeye.run/commit/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/commit/log_page</a></p>
+</li>
+<li><p>靶场要求：利用评论区构造XSS，让受害者点击恶意评论，发送自己的cookie给发送给指定的URL，如果网站判定cookie是正确的，那么攻击者的页面将会弹窗出正确的flag</p>
+</li>
+<li><p>所以我们需要注册两个账户，一个模拟攻击者，一个模拟受害者</p>
+</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>账号</th>
+<th>密码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>攻击者</td>
+<td>07034170</td>
+<td>123</td>
+</tr>
+<tr>
+<td>受害者</td>
+<td>03174171</td>
+<td>123</td>
+</tr>
+</tbody></table>
 <br>
 
 <h4 id="二-具体步骤"><a href="#二-具体步骤" class="headerlink" title="二 具体步骤"></a>二 具体步骤</h4><ul>
@@ -548,7 +570,7 @@
 <li>这时候我们再将cookie换成攻击者03174171的</li>
 <li>可以看到返回了正确的flag</li>
 </ul>
-<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%5Cclipboard(14).png" alt="用攻击者的cookie发送请求"></p>
+<p><img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(14).png" alt="用攻击者的cookie发送请求"></p>
 </li>
 </ul>
 
@@ -801,8 +823,10 @@
                         
                             一 靶场说明
 本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。
+
 需要用到的技能：拼接绕过，引号转换
-靶场地址：https://tofu.exeye.run/commit/l
+
+靶场地址：https://tofu.exeye.run/commit
                         
                     </div>
                     <div class="publish-info">
