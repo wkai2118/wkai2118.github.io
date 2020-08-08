@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（四）跨站脚本XSS之逃逸过滤, Wkai">
+    <meta name="keywords" content="标签, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（四）跨站脚本XSS之逃逸过滤 | Wkai</title>
+    <title>标签 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（四）跨站脚本XSS之逃逸过滤</h1>
+                    <h1 class="description center-align post-title">tags</h1>
                 </div>
             </div>
         </div>
@@ -365,13 +365,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/xss/">
-                                <span class="chip bg-color">xss</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -383,7 +379,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-28
+                    2020-08-08
                 </div>
                 
 
@@ -399,61 +395,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <ul>
-<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<code>&lt;script&gt;</code>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
-<li>本篇靶场地址：<a href="https://tofu.exeye.run/event" target="_blank" rel="noopener">https://tofu.exeye.run/event</a></li>
-</ul>
-<br>
-
-<ul>
-<li>直接打开页面是一个输入框，右边的按钮会将输入的内容变成一个链接</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt></p>
-<ul>
-<li><p>按套路走，先看javascript的源代码，因为输入内容一般会先由js控制</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-btn'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//定义按钮类url-btn的函数内容</span>
-            <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//获取输入框的内容</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>val <span class="token operator">==</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//如果为空</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'none'</span><span class="token punctuation">)</span>   
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//如果不为空</span>
-                val <span class="token operator">=</span>  val<span class="token punctuation">.</span><span class="token function">toLocaleLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/script/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/&lt;/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/>/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//这里会过滤掉&lt;>和script</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'block'</span><span class="token punctuation">)</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;span style="padding-left: 2px">生成的链接为：&lt;a class="url" href="'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'&lt;/a>&lt;/span>'</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//将输入的内容变成href的value</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span></code></pre>
-</li>
-<li><p>分析源代码，我们输入的数据会变成链接，以及标签的内容，但是<code>&lt;script&gt;</code>会被过滤</p>
-</li>
-<li><p>如果只是过滤script这个字眼，那这里有个小技巧，可以在一个script中再插入个script，比如scrscriptipt，系统将script过滤掉后刚好面的字母又可以组成一个script</p>
-</li>
-<li><p>但是偏偏还过滤了&lt;&gt;，所以这就有点难办了，无法打破网页结构</p>
-</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt></p>
-<ul>
-<li><p>分析源码，我们发现还有个方法，就是构造一个onclick事件让他触发js代码</p>
-</li>
-<li><p>那么怎么触发呢？</p>
-</li>
-<li><p>我们同样需要先闭合href字段，再给末尾的引号凑对</p>
-</li>
-<li><p>所以我们的最终payload为：</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span></code></pre>
-</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
-<ul>
-<li>点击链接成功触发弹窗</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt></p>
-<ul>
-<li>不过有个需要注意到的地方就是payload括号中不能用双引号，否则就不能凑成一个闭合，也就无法触发弹窗了</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt></p>
-
+                
             </div>
             <hr/>
 
@@ -478,7 +420,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/</a>
+                    <a href="http://wkaiblog.cn/tags/index-1.html">http://wkaiblog.cn/tags/index-1.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -515,11 +457,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/xss/">
-                                    <span class="chip bg-color">xss</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -685,29 +623,30 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+                <a href="/tags/index-1.html">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" class="responsive-img" alt="（五）跨站脚本XSS之长度限制">
                         
-                        <span class="card-title">（五）跨站脚本XSS之长度限制</span>
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="tags">
+                        
+                        <span class="card-title">tags</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-08
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -716,14 +655,7 @@
                         </span>
                     </div>
                 </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
-                    </a>
-                    
-                </div>
+
                 
             </div>
         </div>
@@ -731,53 +663,37 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/">
+                <a href="/tags/index-1.html">
                     <div class="card-image">
                         
-                        <img src="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/clipboard(4).png" class="responsive-img" alt="解决新版Kali桥接和NAT无法共存的问题">
                         
-                        <span class="card-title">解决新版Kali桥接和NAT无法共存的问题</span>
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="tags">
+                        
+                        <span class="card-title">tags</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-最近在安装了配备XFCE桌面的新版KALI后，突然发现添加的一张桥接的网卡，不能和NAT网卡同时使用，两张网卡只允许一张获取IP地址
-
-
-
-后来发现，可能是虚拟机添加了这张网卡，但是KALI本身没有办法启用它。
-于是我找到了高级网络编辑器
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-08
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/linux/" class="post-category">
-                                    linux
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            wkai
                             
                         </span>
                     </div>
                 </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/kali/">
-                        <span class="chip bg-color">kali</span>
-                    </a>
-                    
-                </div>
+
                 
             </div>
         </div>
