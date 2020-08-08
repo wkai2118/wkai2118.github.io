@@ -784,27 +784,20 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
+                <a href="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" class="responsive-img" alt="（二）跨站脚本XSS之打破网页结构">
+                        <img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" class="responsive-img" alt="（四）跨站脚本XSS之逃逸过滤">
                         
-                        <span class="card-title">（二）跨站脚本XSS之打破网页结构</span>
+                        <span class="card-title">（四）跨站脚本XSS之逃逸过滤</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场地址：https://tofu.exeye.run/dom
-
-
-
-
-打开页面依旧是只有一个搜索框
-
-
-
+当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像&lt;script&gt;标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。
+本篇靶场地址：https://tofu.exeye.r
                         
                     </div>
                     <div class="publish-info">
@@ -841,32 +834,36 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">
+                <a href="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" class="responsive-img" alt="（四）跨站脚本XSS之逃逸过滤">
+                        <img src="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/clipboard(4).png" class="responsive-img" alt="解决新版Kali桥接和NAT无法共存的问题">
                         
-                        <span class="card-title">（四）跨站脚本XSS之逃逸过滤</span>
+                        <span class="card-title">解决新版Kali桥接和NAT无法共存的问题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像&lt;script&gt;标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。
-本篇靶场地址：https://tofu.exeye.r
+最近在安装了配备XFCE桌面的新版KALI后，突然发现添加的一张桥接的网卡，不能和NAT网卡同时使用，两张网卡只允许一张获取IP地址
+
+
+
+后来发现，可能是虚拟机添加了这张网卡，但是KALI本身没有办法启用它。
+于是我找到了高级网络编辑器
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-22
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/XSS/" class="post-category">
-                                    XSS
+                            <a href="/categories/Linux/" class="post-category">
+                                    Linux
                                 </a>
                             
                             
@@ -876,8 +873,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
+                    <a href="/tags/kali/">
+                        <span class="chip bg-color">kali</span>
                     </a>
                     
                 </div>
