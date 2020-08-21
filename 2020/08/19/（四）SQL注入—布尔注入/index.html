@@ -408,14 +408,14 @@
 通过substr<span class="token punctuation">(</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>，可以从字符串<span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span>中取数值，从第<span class="token number">1</span>个字符开始，每次只取一个字符
 通过不断变换参数，可以通过返回页面判断第几位是什么字符，比如上面的，如果数据库名第一个字符刚好是<span class="token number">a</span>，那么页面将会返回正确
 </code></pre>
-<p>&emsp;同样的，我们可以通过Burp来爆破提高效率<br>&emsp;抓包发送到爆破模块，然后选择集束炸弹模式，因为这次爆破的参数是两个</p>
+<p>&emsp;同样的，我们可以通过Burp来爆破数据库名<br>&emsp;抓包发送到爆破模块，然后选择集束炸弹模式，因为这次爆破的参数是两个</p>
 <p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(15).png" alt></p>
 <p>&emsp;然后选择<code>参数1</code>的payload类型为<code>0-9</code>的数字，<code>参数2</code>的payload类型为字符型<code>a-z</code>，当然有些数据库名会出现下划线等特殊字符，这些可以根据情况去加</p>
-<p>&emsp;最后等待结果，因为是集束炸弹模式，所以时间会较长，完成后先选择<code>payload1</code>升序排序，然后再选择长度升序排序</p>
+<p>&emsp;最后等待结果，因为是集束炸弹模式，所以时间会较长，完成后先选择<code>payload1</code>升序排序，然后再选择长度<code>length</code>升序排序</p>
 <p><img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(25).png" alt></p>
 <p>&emsp;最后得出的数据库名为<code>security</code></p>
 <ul>
-<li>接着试出数据库表名</li>
+<li>接着尝试出爆破数据库表名</li>
 </ul>
 <p>&emsp;前面尝试猜测出数据库名的时候，判断了库名的长度，所以我想先测试出表名的长度，以加快爆破的效率</p>
 <pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' and length(select table_name from information_schema.tables where table_schema='</span>security' <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">>=</span><span class="token number">1</span><span class="token comment" spellcheck="true">--+</span></code></pre>

