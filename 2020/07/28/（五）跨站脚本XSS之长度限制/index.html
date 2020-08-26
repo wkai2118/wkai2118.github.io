@@ -784,24 +784,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
+                <a href="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" class="responsive-img" alt="（二）跨站脚本XSS之打破网页结构">
+                        <img src="/2020/07/28/%EF%BC%88%E4%B8%89%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E5%A4%9A%E7%82%B9%E8%BE%93%E5%85%A5/clipboard(5).png" class="responsive-img" alt="（三）跨站脚本XSS之多点输入">
                         
-                        <span class="card-title">（二）跨站脚本XSS之打破网页结构</span>
+                        <span class="card-title">（三）跨站脚本XSS之多点输入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场由知识盒子提供，靶场地址：https://tofu.exeye.run/dom
-
-
-
-
-打开页面依旧是
+本篇也是讲xss的攻击思路。当存在多个输入点时。开发者可能会有疏忽，并没有做好每个输入点的过滤防御,我们应该尽可能对每个输入点进行测试，抓住破绽。    靶场由知识盒子提供，靶场地址：https://tofu.exeye.run/outp
                         
                     </div>
                     <div class="publish-info">
@@ -838,20 +833,24 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/">
+                <a href="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
                         
-                        <img src="/2020/07/28/%EF%BC%88%E5%9B%9B%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACXSS%E4%B9%8B%E9%80%83%E9%80%B8%E8%BF%87%E6%BB%A4/clipboard(4).png" class="responsive-img" alt="（四）跨站脚本XSS之逃逸过滤">
+                        <img src="/2020/07/28/%EF%BC%88%E4%BA%8C%EF%BC%89%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%ACxss%E4%B9%8B%E6%89%93%E7%A0%B4%E7%BD%91%E9%A1%B5%E7%BB%93%E6%9E%84/clipboard(3).png" class="responsive-img" alt="（二）跨站脚本XSS之打破网页结构">
                         
-                        <span class="card-title">（四）跨站脚本XSS之逃逸过滤</span>
+                        <span class="card-title">（二）跨站脚本XSS之打破网页结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-当我们学会了打破网页结构之后，我们发现这个技巧有些情况并不适用。并不能成功的闭合标签，或者像&lt;script&gt;标签直接被过滤。这时候我们应该换一个思路,使用事件属性来突破。
-靶场由知识盒子提供，本篇靶场地址：https://to
+这个靶场主要是讲一个xss攻击技巧，当我们发现自己的输入值进入了html标签的属性值。那么我们就可以想办法打破闭合标签，造成xss。靶场由知识盒子提供，靶场地址：https://tofu.exeye.run/dom
+
+
+
+
+打开页面依旧是
                         
                     </div>
                     <div class="publish-info">

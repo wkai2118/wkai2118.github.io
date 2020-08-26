@@ -401,8 +401,7 @@ Class <span class="token class-name">cls</span> <span class="token operator">=</
 <li><p>对任意的一个Object实例，只要我们获取了它的Class，就可以获取它的一切信息。</p>
 </li>
 <li><p>Class提供了以下几种方法来获取字段</p>
-</li>
-<li><ul>
+<ul>
 <li><code>Field getField(name)</code>：根据字段名获取某个public的field（包括父类）</li>
 <li><code>Field getDeclaredField(name)</code>：根据字段名获取当前类的某个field（不包括父类）</li>
 <li><code>Field[] getFields()</code>：获取所有public的field（包括父类）</li>
@@ -632,7 +631,7 @@ Modifier<span class="token punctuation">.</span><span class="token function">isS
 <li><code>getReturnType()</code>：返回方法返回值类型，也是一个Class实例，例如：String.class；</li>
 <li><code>getParameterTypes()</code>：返回方法的参数类型，是一个Class数组，例如：{String.class, int.class}；</li>
 <li><code>getModifiers()</code>：返回方法的修饰符，它是一个int，不同的bit表示不同的含义。</li>
-<li>invoke(<strong>指定实例</strong>, 调用方法的参数)：直接调用方法</li>
+<li><code>invoke(指定实例, 调用方法的参数)</code>：直接调用方法，必须指定实例，除非调用的方法是静态的</li>
 </ul>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{</span>
     <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> Exception <span class="token punctuation">{</span>
