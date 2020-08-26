@@ -697,8 +697,7 @@ Modifier<span class="token punctuation">.</span><span class="token function">isS
 <li><p>原来是因为Runtime类的实例必须是JVM虚拟机创建的，不能人为地创建，对比上边的Person的Method实例，可以直接创建个Person类的对象，然后invoke()马上就能用，而Runtime类还得通过<code>getRuntime()</code>来返回一个实例</p>
 </li>
 <li><p>再来说说什么是<strong>Runtime类</strong></p>
-</li>
-<li><ul>
+<ul>
 <li><p>该类主要代表了应用程序的运行环境。一个Runtime就代表一个运行环境。</p>
 </li>
 <li><p>常用的方法有:</p>
