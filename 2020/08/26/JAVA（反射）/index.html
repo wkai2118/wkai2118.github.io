@@ -364,7 +364,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="关于反射"><a href="#关于反射" class="headerlink" title="关于反射"></a>关于反射</h3><p>&emsp;通过Class实例获取class信息的方法称为<strong>反射</strong>。Java的反射机制提供为Java工程师的开发提供了相当多的便利性，同样也带来了潜在的安全风险。反射机制的存在使得我们可以越过Java本身的静态检查和类型约束，在运行期直接访问和修改目标对象的属性和状态，极有可能给恶意代码提供可乘之机。想要揭开JAVA反序列化漏洞的密码，就必须学习JAVA的反射机制。</p>
+                <h3 id="关于反射"><a href="#关于反射" class="headerlink" title="关于反射"></a>关于反射</h3><p>&emsp;通过Class实例获取class信息的方法称为<strong>反射</strong>。Java的反射机制提供为Java工程师的开发提供了相当多的便利性，同样也带来了潜在的安全风险。反射机制的存在使得我们可以越过Java本身的静态检查和类型约束，在运行期直接访问和修改目标对象的属性和状态，极有可能给恶意代码提供可乘之机。想要揭开JAVA反序列化漏洞的秘密，就必须学习JAVA的反射机制。</p>
 <h3 id="获取Class"><a href="#获取Class" class="headerlink" title="获取Class"></a>获取Class</h3><p>&emsp;JVM在执行过程中，每读到一个类<code>class</code>，就会在内存中为其创建一个<code>Class实例</code>，这里的<code>Class</code>其实也是一种类，而<code>Class实例</code>就是这种<code>Class类</code>的对象，只不过它记录的是对应类的<strong>类名</strong>、<strong>包名</strong>、<strong>父类</strong>、<strong>实现的接口</strong>、<strong>所有方法</strong>、<strong>字段</strong>等信息，可以说是类的个人资料。<br>&emsp;比如创建了个Person类</p>
 <pre class=" language-java"><code class="language-java">Person Wkai <span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
 <p>&emsp;当JVM读取到这行时，首先会读取<code>Person.class</code>，然后在内存为其创建个<code>Person</code>的<code>Class实例</code>并关联起来，这个实例是由<code>JVM</code>内部创建的，如果我们查看源码，可以发现<code>Class</code>的构造方法是<code>private</code>，只有<code>JVM</code>才能创建，无法人为地创建。<br>所以每个Class实例都对应着一种数据类型</p>
