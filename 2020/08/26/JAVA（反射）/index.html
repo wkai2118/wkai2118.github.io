@@ -997,37 +997,31 @@ Modifier<span class="token punctuation">.</span><span class="token function">isS
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                <a href="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/24/phpmyadmin%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1.png" class="responsive-img" alt="phpmyadmin反序列化">
+                        <img src="/2020/08/26/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88updatexml%E5%87%BD%E6%95%B0%EF%BC%89/4.png" class="responsive-img" alt="（五）SQL注入—报错注入（updatexml函数）">
                         
-                        <span class="card-title">phpmyadmin反序列化</span>
+                        <span class="card-title">（五）SQL注入—报错注入（updatexml函数）</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            0x01 漏洞说明phpmyadmin 2.x版本的setup.php中存在一处反序列化漏洞，通过该漏洞，攻击者可以读取任意文件或执行任意代码。
-
-
-0x02 漏洞复现通过vulhub快速在docker中复现漏洞
-
-
-
-0x03 漏洞利用使
+                            &emsp;updatexml()函数主要用于修改查询到的内容，它总共需要三个参数，其中第二个参数必须要符合XPATH语法，否则将会返回参数错误，所以如果网页开启了错误回显，就可以使用这个函数来进行sql报错注入
+&emsp;正好知识盒子中
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-26
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="post-category">
-                                    反序列化
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                    SQL注入
                                 </a>
                             
                             
@@ -1037,8 +1031,8 @@ Modifier<span class="token punctuation">.</span><span class="token function">isS
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/php/">
-                        <span class="chip bg-color">php</span>
+                    <a href="/tags/SQL%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5updatexml%E5%92%8Cextractvalue/">
+                        <span class="chip bg-color">SQL报错注入updatexml和extractvalue()</span>
                     </a>
                     
                 </div>
