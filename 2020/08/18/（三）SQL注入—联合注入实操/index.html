@@ -745,25 +745,26 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/17/%E7%94%A8docker%E9%83%A8%E7%BD%B2mysql%E7%8E%AF%E5%A2%83/">
+                <a href="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/17/%E7%94%A8docker%E9%83%A8%E7%BD%B2mysql%E7%8E%AF%E5%A2%83/1.png" class="responsive-img" alt="用docker部署mysql环境">
+                        <img src="/2020/08/17/%EF%BC%88%E4%B8%89%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86/clipboard(3).png" class="responsive-img" alt="（三）SQL注入—联合注入原理">
                         
-                        <span class="card-title">用docker部署mysql环境</span>
+                        <span class="card-title">（三）SQL注入—联合注入原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-搜索并下载镜像 
+本篇主要总结了下联合注入的原理，并且结合数据库证明这些原理，联合注入主要是靠union实现，union的功能是将右边的查询结果和左边的查询结果合并，所以大部分操作都是通过union实现的。
+首先列出测试用的表结构和数据
 
-docker search mysql/mysql-server      (这是一个优化过的镜像)
 
-运行镜像
 
-docker run -d -p 3306:3306 --name 1mysql mysql/mysq
+
+
+在参数后
                         
                     </div>
                     <div class="publish-info">
@@ -774,21 +775,13 @@ docker run -d -p 3306:3306 --name 1mysql mysql/mysq
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="post-category">
-                                    环境搭建
+                            <a href="/categories/SQL%E6%B3%A8%E5%85%A5/" class="post-category">
+                                    SQL注入
                                 </a>
                             
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/docker/">
-                        <span class="chip bg-color">docker</span>
-                    </a>
-                    
                 </div>
                 
             </div>

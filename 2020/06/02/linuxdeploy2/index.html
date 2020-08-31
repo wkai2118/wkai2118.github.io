@@ -396,13 +396,19 @@
 <p>2）输入127.0.0.1，接着会要求我们新建个认证，认证名随便输，然后得输入我们安装系统时的用户名和密码了，root和toor<br><img src="/2020/06/02/linuxdeploy2/23.png" alt></p>
 <p>3）最终效果<br><img src="/2020/06/02/linuxdeploy2/24.png" alt></p>
 </li>
+<li><p>这里得注意的是刚装完的系统是无法打开默认字库的：<code>could not open default font &#39;fixed&#39;</code></p>
+<p>需要再安装一个软件</p>
+<pre><code>apt-get install xfonts-base</code></pre><p>装完后再回到linuxdeploy里选择右上角三点里的配置重新初始化，最后才会出现上文说到的三个<code>done</code></p>
+</li>
 <li><p>图形化启动</p>
 <p>图形化启动需要用到VNC Viewer，关于XSDL的图形化启动以后会讲到<br>1）进入VNC Viewer主界面点击+号创建<br><img src="/2020/06/02/linuxdeploy2/25.png" alt></p>
 <p>2）输入本机IP地址以及端口号，昵称随便填，注意，这里端口号是0，<code>127.0.0.1:0</code><br><img src="/2020/06/02/linuxdeploy2/26.png" alt></p>
 <p>3）创建成功后选择连接<br><img src="/2020/06/02/linuxdeploy2/27.png" alt></p>
 <p>4）输入密码toor，这里可以勾上记住密码就不必老是输入才能登陆了<br><img src="/2020/06/02/linuxdeploy2/28.png" alt></p>
-<p>5）最终<br><img src="/2020/06/02/linuxdeploy2/29.png" alt></p>
-</li>
+<p>5）最终</p>
+<p><img src="/2020/06/02/linuxdeploy2/29.png" alt></p>
+<p>6)如果连接后显示不出桌面就需要自行重新安装了</p>
+<pre><code>sudo apt install kali-desktop-xfce</code></pre></li>
 </ol>
 <p>后期还需要完善，软件更新，以及必要软件的安装，特别是好多渗透工具都还没有预装，需要我们自己安装，这些我都会在后面的篇章中介绍方法。</p>
 
