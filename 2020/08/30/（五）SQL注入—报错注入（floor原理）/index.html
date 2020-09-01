@@ -673,30 +673,30 @@ concat：字符串拼接</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/08/30/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88floor%E5%8E%9F%E7%90%86%EF%BC%89/">
+                <a href="/2020/09/01/%EF%BC%88%E5%85%AD%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%97%B6%E9%97%B4%E5%9E%8B%E7%9B%B2%E6%B3%A8/">
                     <div class="card-image">
                         
-                        <img src="/2020/08/30/%EF%BC%88%E4%BA%94%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5%EF%BC%88floor%E5%8E%9F%E7%90%86%EF%BC%89/5.png" class="responsive-img" alt="（五）SQL注入—报错注入（floor原理）">
+                        <img src="/2020/09/01/%EF%BC%88%E5%85%AD%EF%BC%89SQL%E6%B3%A8%E5%85%A5%E2%80%94%E6%97%B6%E9%97%B4%E5%9E%8B%E7%9B%B2%E6%B3%A8/clipboard.png" class="responsive-img" alt="（六）SQL注入—时间型盲注">
                         
-                        <span class="card-title">（五）SQL注入—报错注入（floor原理）</span>
+                        <span class="card-title">（六）SQL注入—时间型盲注</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            这是一段通过报错来进行sql注入的payload，它的核心函数是floor()
-?id=1' and (select 1 from (select count(*),concat(database(),floor(rand(0)*2))x 
+                            有时候无论输入的值是否正确，都返回一样的页面，这样就无法使用布尔注入了，但是可以通过返回时间来判断
+时间型盲注的关键函数就在于sleep()，还有if()
+if(条件判断式,真,假)，如果判断式为真就返回第二个参数，如果为假则返回第三个参数
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-30
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-09-01
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -708,15 +708,6 @@ concat：字符串拼接</code></pre>
                             
                         </span>
                     </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/SQL%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5floor/">
-                        <span class="chip bg-color">SQL报错注入floor</span>
-                    </a>
-                    
                 </div>
                 
             </div>
